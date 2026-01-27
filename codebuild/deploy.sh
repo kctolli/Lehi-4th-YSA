@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd ~/web ## Assume your code is in ~/web
+cd ~/hpysa/web ## Assume your code is in ~/hpysa/web
 
 git status
 git pull 
