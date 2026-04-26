@@ -5,7 +5,7 @@ export const BishopInfo = {
 
 export const ExecutiveSecretaryInfo = {
     name: 'Executive Secretary',
-    phone: '(209) 790-9348',
+    phone: '(801) 941-5210',
 };
 
 export const ActivityInfo = {
