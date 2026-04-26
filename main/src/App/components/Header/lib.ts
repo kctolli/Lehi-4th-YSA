@@ -9,8 +9,9 @@ export const ExecutiveSecretaryInfo = {
 };
 
 export const ActivityInfo = {
+    prayer: 'Sundays @ 8:00 PM',
     fhe: 'Mondays @ 7:00 PM',
-    stake: 'Thursdays @ 6:30 PM',
     game: 'Tuesdays @ 7:00 PM',
+    stake: 'Thursdays @ 6:30 PM',
 }
 
