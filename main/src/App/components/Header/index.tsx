@@ -44,7 +44,7 @@ const Header = () => (
                 </Card>
                 <Card className="border-0 lg:col-span-3">
                     <div className="flex flex-col items-center justify-center gap-1 rounded border p-4 font-sans text-base uppercase text-primary shadow-md">
-                        <span className="font-medium sm:text-lg">Family Home Evening</span>
+                        <span className="font-medium sm:text-lg">Activity Night</span>
                         <span>{ActivityInfo.fhe}</span>
                     </div>
                 </Card>
