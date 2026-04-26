@@ -8,3 +8,9 @@ export const ExecutiveSecretaryInfo = {
     phone: '(209) 790-9348',
 };
 
+export const ActivityInfo = {
+    fhe: 'Mondays @ 7:00 PM',
+    stake: 'Thursdays @ 6:30 PM',
+    game: 'Tuesdays @ 7:00 PM',
+}
+
