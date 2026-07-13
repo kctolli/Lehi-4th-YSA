@@ -9,7 +9,7 @@ const Footer = () => (
                     index
                     element={
                         <a className="transition-all hover:text-tertiary hover:underline" href="/" aria-label="Heritage Park YSA">
-                            Heritage Park YSA Ward, 26&ndash;35
+                            Lehi YSA 4th Ward, 26&ndash;35
                         </a>
                     }
                 />
