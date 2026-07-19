@@ -9,6 +9,7 @@ export const metadata: Metadata = {
     title: 'Lehi YSA 4th Ward, 26–35'
 };
 
+
 const RootLayout = ({ children }: { children: ReactNode }) => (
     <html lang="en">
         <body>
