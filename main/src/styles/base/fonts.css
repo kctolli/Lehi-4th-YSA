@@ -35,14 +35,14 @@
 
 @font-face {
     font-family: 'Nimbus Sans';
-    src: url('/fonts/nimbus-sans-regular.woff') format('woff');
+    src: url('/fonts/nimbus-sans-d-ot-webfont.woff') format('woff');
     font-style: normal;
     font-weight: 400;
 }
 
 @font-face {
     font-family: 'Nimbus Sans';
-    src: url('/fonts/nimbus-sans-bold.woff') format('woff');
+    src: url('/fonts/Nimbus-Sans-Bold.woff') format('woff');
     font-style: bold;
     font-weight: 700;
 }

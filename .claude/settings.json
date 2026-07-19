@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(*)",
+      "Bash(node *)",
+      "Bash(npx eslint *)",
+      "FileSystem(read, write, delete, list)",
+      "Network(allow)",
+      "Bash(xargs -I{} echo {})",
+      "Bash(openssl rand *)",
+      "Bash(npx next *)",
+      "Bash(xargs -I{} sh -c 'echo ==={}===; cat {}')",
+      "Bash(node -e ' *)",
+      "Bash(kill 451518)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(disown)",
+      "Bash(curl -s -i http://localhost:3000/admin)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/admin/login)",
+      "Bash(rm -f cookies.txt)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" -X POST http://localhost:3000/api/admin/login -H \"Content-Type: application/json\" -d '{\"password\":\"wrongpass\"}')",
+      "Bash(curl -s -c cookies.txt -o /dev/null -w \"%{http_code}\\\\n\" -X POST http://localhost:3000/api/admin/login -H \"Content-Type: application/json\" -d '{\"password\":\"lehi4thysa\"}')",
+      "Bash(curl -s -b cookies.txt -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/admin)",
+      "Bash(curl -s -b cookies.txt http://localhost:3000/api/admin/announcements)",
+      "Bash(npx --yes playwright --version)",
+      "Bash(curl -s -b cookies.txt -i http://localhost:3000/admin)",
+      "Bash(curl -s -b cookies.txt -c cookies.txt -o /dev/null -w \"%{http_code}\\\\n\" -X POST http://localhost:3000/api/admin/logout)",
+      "Bash(npx --yes playwright install chromium --with-deps)",
+      "Bash(npx --yes playwright install chromium)",
+      "Bash(npm init *)",
+      "Bash(node check.js)"
+    ]
+  }
+}

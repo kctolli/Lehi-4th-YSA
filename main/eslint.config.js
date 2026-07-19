@@ -1,19 +1,17 @@
 import { defineConfig } from 'eslint/config';
-import globals from 'globals';
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
-import pluginReact from 'eslint-plugin-react';
+import nextPlugin from 'eslint-config-next';
 import eslintPluginPrettier from 'eslint-plugin-prettier/recommended';
 
 export default defineConfig([
     {
         files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
-        languageOptions: { globals: globals.browser },
         plugins: { js },
         extends: ['js/recommended'],
         rules: {}
     },
+    ...nextPlugin,
     eslintPluginPrettier,
-    tseslint.configs.recommended,
-    pluginReact.configs.flat.recommended
+    tseslint.configs.recommended
 ]);
