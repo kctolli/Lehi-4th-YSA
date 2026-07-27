@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { App, Button, DatePicker, Form, Input, Modal, Select, Table, Tag } from 'antd';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import dayjs from 'dayjs';
 import axios from 'axios';
 
@@ -46,7 +46,7 @@ const DATE_FIELDS: { key: keyof Pick<CallingFormValues, 'date_extended' | 'date_
     { key: 'date_rejected', label: 'Date Rejected' }
 ];
 
-const formatDate = (value: string | null): string => (value ? format(new Date(value), 'MMM d, yyyy') : '—');
+const formatDate = (value: string | null): string => (value ? format(parseISO(value), 'MMM d, yyyy') : '—');
 
 const getStatus = (calling: Calling): { label: string; color: string } => {
     if (calling.date_rejected) return { label: 'Rejected', color: 'red' };

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { App, Button, DatePicker, Form, Input, Modal, Switch, Table } from 'antd';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import dayjs from 'dayjs';
 import axios from 'axios';
 
@@ -20,7 +20,7 @@ interface VideoAuditFormValues {
     date_watched?: dayjs.Dayjs;
 }
 
-const formatDate = (value: string | null): string => (value ? format(new Date(value), 'MMM d, yyyy') : '—');
+const formatDate = (value: string | null): string => (value ? format(parseISO(value), 'MMM d, yyyy') : '—');
 
 const VideoAuditPage = () => {
     const { message, modal } = App.useApp();
