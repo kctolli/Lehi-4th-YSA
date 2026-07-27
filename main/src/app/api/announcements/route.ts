@@ -8,9 +8,10 @@ export async function GET() {
     yesterday.setDate(yesterday.getDate() - 1);
 
     const rows = await sql`
-        SELECT id, title, body, posted_at
+        SELECT id, title, body, posted_at, expires_at
         FROM announcements
         WHERE posted_at > ${yesterday.toISOString()}
+            AND (expires_at IS NULL OR expires_at > now())
         ORDER BY posted_at DESC
     `;
 

@@ -5,6 +5,7 @@ export interface Announcement {
     title: string;
     body: string;
     posted_at: string;
+    expires_at: string | null;
 }
 
 export const getAnnouncements = async (): Promise<Announcement[]> => {

@@ -22,11 +22,11 @@ interface AnnouncementFormValues {
 }
 
 const fetchAnnouncements = async (): Promise<Announcement[]> => {
-    const { data } = await axios.get<Announcement[]>('/api/admin/announcements');
+    const { data } = await axios.get<Announcement[]>('/api/bishopric/announcements');
     return Array.isArray(data) ? data : [];
 };
 
-const AnnouncementsAdminPage = () => {
+const AnnouncementsPage = () => {
     const { message, modal } = App.useApp();
     const queryClient = useQueryClient();
     const [form] = Form.useForm<AnnouncementFormValues>();
@@ -34,11 +34,11 @@ const AnnouncementsAdminPage = () => {
     const [editingId, setEditingId] = useState<number | null>(null);
 
     const { data: announcements, isLoading } = useQuery({
-        queryKey: ['admin', 'announcements'],
+        queryKey: ['bishopric', 'announcements'],
         queryFn: fetchAnnouncements
     });
 
-    const invalidate = () => queryClient.invalidateQueries({ queryKey: ['admin', 'announcements'] });
+    const invalidate = () => queryClient.invalidateQueries({ queryKey: ['bishopric', 'announcements'] });
 
     const saveMutation = useMutation({
         mutationFn: async (values: AnnouncementFormValues) => {
@@ -48,9 +48,9 @@ const AnnouncementsAdminPage = () => {
                 expires_at: values.expires_at ? datetimeLocalToISO(values.expires_at) : null
             };
             if (editingId) {
-                await axios.put(`/api/admin/announcements/${editingId}`, payload);
+                await axios.put(`/api/bishopric/announcements/${editingId}`, payload);
             } else {
-                await axios.post('/api/admin/announcements', payload);
+                await axios.post('/api/bishopric/announcements', payload);
             }
         },
         onSuccess: () => {
@@ -62,7 +62,7 @@ const AnnouncementsAdminPage = () => {
     });
 
     const deleteMutation = useMutation({
-        mutationFn: (id: number) => axios.delete(`/api/admin/announcements/${id}`),
+        mutationFn: (id: number) => axios.delete(`/api/bishopric/announcements/${id}`),
         onSuccess: () => {
             message.success('Deleted');
             invalidate();
@@ -162,4 +162,4 @@ const AnnouncementsAdminPage = () => {
     );
 };
 
-export default AnnouncementsAdminPage;
+export default AnnouncementsPage;
