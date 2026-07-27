@@ -16,7 +16,7 @@ const Page = () => {
                 {announcements?.map((announcement) => (
                     <article key={announcement.id} className="rounded-lg border p-4">
                         <h3 className="font-medium">{announcement.title}</h3>
-                        <p>{announcement.body}</p>
+                        <p className="whitespace-pre-line">{announcement.body}</p>
                     </article>
                 ))}
             </section>
