@@ -6,6 +6,7 @@ import { App, Button, DatePicker, Form, Input, Modal, Switch, Table } from 'antd
 import { format, parseISO } from 'date-fns';
 import dayjs from 'dayjs';
 import axios from 'axios';
+import { getTodayInAppTimeZone } from '@/utils/timezone';
 
 interface VideoAudit {
     id: number;
@@ -73,7 +74,7 @@ const VideoAuditPage = () => {
             axios.put(`/api/bishopric/video-audits/${audit.id}`, {
                 name: audit.name,
                 calling: audit.calling,
-                date_watched: watched ? dayjs().format('YYYY-MM-DD') : null
+                date_watched: watched ? getTodayInAppTimeZone() : null
             }),
         onSuccess: invalidate,
         onError: () => message.error('Failed to update')
