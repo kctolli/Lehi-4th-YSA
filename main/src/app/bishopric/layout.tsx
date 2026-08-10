@@ -7,9 +7,7 @@ import { Button } from 'antd';
 
 const NAV_ITEMS = [
     { href: '/bishopric/callings', label: 'Callings' },
-    { href: '/bishopric/announcements', label: 'Announcements' },
-    { href: '/bishopric/video-audit', label: 'Video Audit Tracker' },
-    { href: '/bishopric/header-settings', label: 'Header Settings' }
+    { href: '/bishopric/video-audit', label: 'Video Audit Tracker' }
 ];
 
 const BishopricLayout = ({ children }: { children: ReactNode }) => {

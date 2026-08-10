@@ -15,7 +15,7 @@ const LoginPage = () => {
         setLoading(true);
 
         try {
-            const response = await fetch('/api/admin/login', {
+            const response = await fetch('/api/ward-council/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ password })
@@ -26,7 +26,7 @@ const LoginPage = () => {
                 return;
             }
 
-            router.push('/admin');
+            router.push('/ward-council');
             router.refresh();
         } finally {
             setLoading(false);
@@ -35,7 +35,7 @@ const LoginPage = () => {
 
     return (
         <section className="mx-auto flex max-w-sm flex-col gap-4 pt-16">
-            <h1 className="text-2xl font-semibold">Admin Login</h1>
+            <h1 className="text-2xl font-semibold">Ward Council Login</h1>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <Input.Password value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Password" autoFocus />
                 <Button type="primary" htmlType="submit" loading={loading}>

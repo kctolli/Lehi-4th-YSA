@@ -1,7 +1,3 @@
-import { redirect } from 'next/navigation';
-
-const AdminIndexPage = () => {
-    redirect('/admin/announcements');
-};
+const AdminIndexPage = () => <p className="text-gray-500">No admin tools are configured.</p>;
 
 export default AdminIndexPage;

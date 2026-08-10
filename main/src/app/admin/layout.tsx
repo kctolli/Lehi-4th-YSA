@@ -5,10 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from 'antd';
 
-const NAV_ITEMS = [
-    { href: '/admin/announcements', label: 'Announcements' },
-    { href: '/admin/header-settings', label: 'Header Settings' }
-];
+const NAV_ITEMS: { href: string; label: string }[] = [];
 
 const AdminLayout = ({ children }: { children: ReactNode }) => {
     const pathname = usePathname();

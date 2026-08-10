@@ -7,7 +7,7 @@ interface RouteParams {
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
     const { id } = await params;
-    const { person_name, calling_name, organization, phone, email, date_extended, date_sustained, date_set_apart, date_released, date_rejected, notes } = await request.json();
+    const { person_name, calling_name, organization, approved, in_lcr, date_extended, date_sustained, date_set_apart, date_released, date_rejected, notes } = await request.json();
 
     if (!person_name || !calling_name) {
         return NextResponse.json({ error: 'person_name and calling_name are required' }, { status: 400 });
@@ -18,8 +18,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         SET person_name = ${person_name},
             calling_name = ${calling_name},
             organization = ${organization ?? null},
-            phone = ${phone ?? null},
-            email = ${email ?? null},
+            approved = ${approved ?? false},
+            in_lcr = ${in_lcr ?? false},
             date_extended = ${date_extended ?? null},
             date_sustained = ${date_sustained ?? null},
             date_set_apart = ${date_set_apart ?? null},
@@ -28,7 +28,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
             notes = ${notes ?? null},
             updated_at = now()
         WHERE id = ${id}
-        RETURNING id, person_name, calling_name, organization, phone, email, date_extended, date_sustained, date_set_apart, date_released, date_rejected, notes
+        RETURNING id, person_name, calling_name, organization, approved, in_lcr, date_extended, date_sustained, date_set_apart, date_released, date_rejected, notes
     `;
 
     if (!row) return NextResponse.json({ error: 'Not found' }, { status: 404 });

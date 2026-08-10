@@ -2,18 +2,19 @@
 
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { App, Button, DatePicker, Form, Input, Modal, Select, Table, Tag } from 'antd';
+import { App, AutoComplete, Button, DatePicker, Form, Input, Modal, Switch, Table, Tag } from 'antd';
 import { format, parseISO } from 'date-fns';
 import dayjs from 'dayjs';
 import axios from 'axios';
+import { ORGANIZATIONS } from '@/utils/organizations';
 
 interface Calling {
     id: number;
     person_name: string;
     calling_name: string;
     organization: string | null;
-    phone: string | null;
-    email: string | null;
+    approved: boolean;
+    in_lcr: boolean;
     date_extended: string | null;
     date_sustained: string | null;
     date_set_apart: string | null;
@@ -26,8 +27,8 @@ interface CallingFormValues {
     person_name: string;
     calling_name: string;
     organization?: string;
-    phone?: string;
-    email?: string;
+    approved?: boolean;
+    in_lcr?: boolean;
     date_extended?: dayjs.Dayjs;
     date_sustained?: dayjs.Dayjs;
     date_set_apart?: dayjs.Dayjs;
@@ -35,8 +36,6 @@ interface CallingFormValues {
     date_rejected?: dayjs.Dayjs;
     notes?: string;
 }
-
-const ORGANIZATIONS = ['Bishopric', 'Elders Quorum', 'Relief Society', 'Young Men', 'Young Women', 'Primary', 'Sunday School', 'Ward Council', 'Clerk', 'Other'];
 
 const DATE_FIELDS: { key: keyof Pick<CallingFormValues, 'date_extended' | 'date_sustained' | 'date_set_apart' | 'date_released' | 'date_rejected'>; label: string }[] = [
     { key: 'date_extended', label: 'Date Extended' },
@@ -54,7 +53,8 @@ const getStatus = (calling: Calling): { label: string; color: string } => {
     if (calling.date_set_apart) return { label: 'Set Apart', color: 'green' };
     if (calling.date_sustained) return { label: 'Sustained', color: 'blue' };
     if (calling.date_extended) return { label: 'Extended', color: 'orange' };
-    return { label: 'New', color: 'default' };
+    if (calling.approved) return { label: 'Approved', color: 'cyan' };
+    return { label: 'Pending Approval', color: 'default' };
 };
 
 const CallingsPage = () => {
@@ -107,6 +107,18 @@ const CallingsPage = () => {
         onError: () => message.error('Failed to delete calling')
     });
 
+    const toggleApprovedMutation = useMutation({
+        mutationFn: ({ calling, approved }: { calling: Calling; approved: boolean }) => axios.put(`/api/bishopric/callings/${calling.id}`, { ...calling, approved }),
+        onSuccess: invalidate,
+        onError: () => message.error('Failed to update')
+    });
+
+    const toggleInLcrMutation = useMutation({
+        mutationFn: ({ calling, in_lcr }: { calling: Calling; in_lcr: boolean }) => axios.put(`/api/bishopric/callings/${calling.id}`, { ...calling, in_lcr }),
+        onSuccess: invalidate,
+        onError: () => message.error('Failed to update')
+    });
+
     const openCreateModal = () => {
         setEditingId(null);
         form.resetFields();
@@ -119,8 +131,8 @@ const CallingsPage = () => {
             person_name: calling.person_name,
             calling_name: calling.calling_name,
             organization: calling.organization ?? undefined,
-            phone: calling.phone ?? undefined,
-            email: calling.email ?? undefined,
+            approved: calling.approved,
+            in_lcr: calling.in_lcr,
             date_extended: calling.date_extended ? dayjs(calling.date_extended) : undefined,
             date_sustained: calling.date_sustained ? dayjs(calling.date_sustained) : undefined,
             date_set_apart: calling.date_set_apart ? dayjs(calling.date_set_apart) : undefined,
@@ -171,8 +183,14 @@ const CallingsPage = () => {
                     },
                     { title: 'Sustained', dataIndex: 'date_sustained', render: formatDate },
                     { title: 'Set Apart', dataIndex: 'date_set_apart', render: formatDate },
-                    { title: 'Phone', dataIndex: 'phone', render: (value: string | null) => value ?? '—' },
-                    { title: 'Email', dataIndex: 'email', render: (value: string | null) => value ?? '—' },
+                    {
+                        title: 'Approved',
+                        render: (_, record: Calling) => <Switch checked={record.approved} onChange={(checked) => toggleApprovedMutation.mutate({ calling: record, approved: checked })} />
+                    },
+                    {
+                        title: 'In LCR',
+                        render: (_, record: Calling) => <Switch checked={record.in_lcr} onChange={(checked) => toggleInLcrMutation.mutate({ calling: record, in_lcr: checked })} />
+                    },
                     {
                         title: 'Actions',
                         render: (_, record: Calling) => (
@@ -198,13 +216,13 @@ const CallingsPage = () => {
                         <Input />
                     </Form.Item>
                     <Form.Item name="organization" label="Organization">
-                        <Select allowClear options={ORGANIZATIONS.map((organization) => ({ value: organization, label: organization }))} />
+                        <AutoComplete allowClear options={ORGANIZATIONS.map((organization) => ({ value: organization }))} filterOption={(inputValue, option) => !!option?.value.toLowerCase().includes(inputValue.toLowerCase())} />
                     </Form.Item>
-                    <Form.Item name="phone" label="Phone">
-                        <Input />
+                    <Form.Item name="approved" label="Approved" valuePropName="checked" initialValue={false}>
+                        <Switch />
                     </Form.Item>
-                    <Form.Item name="email" label="Email">
-                        <Input />
+                    <Form.Item name="in_lcr" label="In LCR" valuePropName="checked" initialValue={false}>
+                        <Switch />
                     </Form.Item>
                     <div className="grid grid-cols-2 gap-x-4">
                         {DATE_FIELDS.map(({ key, label }) => (
