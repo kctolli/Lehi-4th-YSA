@@ -5,7 +5,7 @@ export async function GET() {
     const rows = await sql`
         SELECT id, person_name, calling_name, organization, approved
         FROM callings
-        ORDER BY organization NULLS LAST, person_name
+        ORDER BY approved, organization NULLS LAST, person_name
     `;
 
     return NextResponse.json(rows);
