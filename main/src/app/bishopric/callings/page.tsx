@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { App, AutoComplete, Button, DatePicker, Form, Input, Modal, Switch, Table, Tag } from 'antd';
 import { format, parseISO } from 'date-fns';
@@ -47,15 +47,29 @@ const DATE_FIELDS: { key: keyof Pick<CallingFormValues, 'date_extended' | 'date_
 
 const formatDate = (value: string | null): string => (value ? format(parseISO(value), 'MMM d, yyyy') : '—');
 
-const getStatus = (calling: Calling): { label: string; color: string } => {
-    if (calling.date_rejected) return { label: 'Rejected', color: 'red' };
-    if (calling.date_released) return { label: 'Released', color: 'default' };
-    if (calling.date_set_apart) return { label: 'Set Apart', color: 'green' };
-    if (calling.date_sustained) return { label: 'Sustained', color: 'blue' };
-    if (calling.date_extended) return { label: 'Extended', color: 'orange' };
-    if (calling.approved) return { label: 'Approved', color: 'cyan' };
-    return { label: 'Pending Approval', color: 'default' };
+const STATUSES: { value: string; label: string; color: string }[] = [
+    { value: 'pending', label: 'Pending Approval', color: 'default' },
+    { value: 'approved', label: 'Approved', color: 'cyan' },
+    { value: 'extended', label: 'Extended', color: 'orange' },
+    { value: 'sustained', label: 'Sustained', color: 'blue' },
+    { value: 'set_apart', label: 'Set Apart', color: 'green' },
+    { value: 'released', label: 'Released', color: 'default' },
+    { value: 'rejected', label: 'Rejected', color: 'red' }
+];
+
+const STATUS_BY_VALUE = new Map(STATUSES.map((status, index) => [status.value, { ...status, rank: index }]));
+
+const getStatusValue = (calling: Calling): string => {
+    if (calling.date_rejected) return 'rejected';
+    if (calling.date_released) return 'released';
+    if (calling.date_set_apart) return 'set_apart';
+    if (calling.date_sustained) return 'sustained';
+    if (calling.date_extended) return 'extended';
+    if (calling.approved) return 'approved';
+    return 'pending';
 };
+
+const getStatus = (calling: Calling) => STATUS_BY_VALUE.get(getStatusValue(calling)) ?? STATUS_BY_VALUE.get('pending')!;
 
 const CallingsPage = () => {
     const { message, modal } = App.useApp();
@@ -73,6 +87,22 @@ const CallingsPage = () => {
     });
 
     const invalidate = () => queryClient.invalidateQueries({ queryKey: ['bishopric', 'callings'] });
+
+    const organizationFilters = useMemo(
+        () =>
+            Array.from(new Set((callings ?? []).map((calling) => calling.organization).filter((value): value is string => !!value)))
+                .sort()
+                .map((value) => ({ text: value, value })),
+        [callings]
+    );
+
+    const callingFilters = useMemo(
+        () =>
+            Array.from(new Set((callings ?? []).map((calling) => calling.calling_name)))
+                .sort()
+                .map((value) => ({ text: value, value })),
+        [callings]
+    );
 
     const saveMutation = useMutation({
         mutationFn: async (values: CallingFormValues) => {
@@ -172,10 +202,28 @@ const CallingsPage = () => {
                 dataSource={callings}
                 columns={[
                     { title: 'Name', dataIndex: 'person_name' },
-                    { title: 'Calling', dataIndex: 'calling_name' },
-                    { title: 'Organization', dataIndex: 'organization', render: (value: string | null) => value ?? '—' },
+                    {
+                        title: 'Calling',
+                        dataIndex: 'calling_name',
+                        sorter: (a: Calling, b: Calling) => a.calling_name.localeCompare(b.calling_name),
+                        filters: callingFilters,
+                        filterSearch: true,
+                        onFilter: (value, record: Calling) => record.calling_name === value
+                    },
+                    {
+                        title: 'Organization',
+                        dataIndex: 'organization',
+                        render: (value: string | null) => value ?? '—',
+                        sorter: (a: Calling, b: Calling) => (a.organization ?? '').localeCompare(b.organization ?? ''),
+                        filters: organizationFilters,
+                        filterSearch: true,
+                        onFilter: (value, record: Calling) => record.organization === value
+                    },
                     {
                         title: 'Status',
+                        sorter: (a: Calling, b: Calling) => getStatus(a).rank - getStatus(b).rank,
+                        filters: STATUSES.map((status) => ({ text: status.label, value: status.value })),
+                        onFilter: (value, record: Calling) => getStatusValue(record) === value,
                         render: (_, record: Calling) => {
                             const status = getStatus(record);
                             return <Tag color={status.color}>{status.label}</Tag>;
