@@ -7,6 +7,7 @@ import { format, parseISO } from 'date-fns';
 import dayjs from 'dayjs';
 import axios from 'axios';
 import { ORGANIZATIONS } from '@/utils/organizations';
+import { formatTimestampInAppTimeZone } from '@/utils/timezone';
 
 interface Calling {
     id: number;
@@ -15,6 +16,7 @@ interface Calling {
     organization: string | null;
     approved: boolean;
     in_lcr: boolean;
+    submitted_at: string | null;
     date_extended: string | null;
     date_sustained: string | null;
     date_set_apart: string | null;
@@ -235,7 +237,8 @@ const CallingsPage = () => {
                         onFilter: (value, record: Calling) => getStatusValue(record) === value,
                         render: (_, record: Calling) => {
                             const status = getStatus(record);
-                            return <Tag color={status.color}>{status.label}</Tag>;
+                            const label = status.value === 'pending' && record.submitted_at ? `Pending Approval since ${formatTimestampInAppTimeZone(record.submitted_at)}` : status.label;
+                            return <Tag color={status.color}>{label}</Tag>;
                         }
                     },
                     { title: 'Sustained', dataIndex: 'date_sustained', render: formatDate },

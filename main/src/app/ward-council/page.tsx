@@ -35,7 +35,7 @@ const WardCouncilPage = () => {
     });
 
     const submitMutation = useMutation({
-        mutationFn: (values: WardCouncilFormValues) => axios.post('/api/ward-council', values),
+        mutationFn: (values: WardCouncilFormValues) => axios.post('/api/ward-council', { ...values, submitted_at: new Date().toISOString() }),
         onSuccess: () => {
             message.success('Submitted for approval');
             form.resetFields();

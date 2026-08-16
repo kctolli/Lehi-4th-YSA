@@ -3,7 +3,7 @@ import { sql } from '@/lib/db';
 
 export async function GET() {
     const rows = await sql`
-        SELECT id, person_name, calling_name, organization, approved, in_lcr,
+        SELECT id, person_name, calling_name, organization, approved, in_lcr, submitted_at,
                date_extended, date_sustained, date_set_apart, date_released, date_rejected, notes
         FROM callings
         ORDER BY
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     const [row] = await sql`
         INSERT INTO callings (person_name, calling_name, organization, approved, in_lcr, date_extended, date_sustained, date_set_apart, date_released, date_rejected, notes)
         VALUES (${person_name}, ${calling_name}, ${organization ?? null}, ${approved ?? false}, ${in_lcr ?? false}, ${date_extended ?? null}, ${date_sustained ?? null}, ${date_set_apart ?? null}, ${date_released ?? null}, ${date_rejected ?? null}, ${notes ?? null})
-        RETURNING id, person_name, calling_name, organization, approved, in_lcr, date_extended, date_sustained, date_set_apart, date_released, date_rejected, notes
+        RETURNING id, person_name, calling_name, organization, approved, in_lcr, submitted_at, date_extended, date_sustained, date_set_apart, date_released, date_rejected, notes
     `;
 
     return NextResponse.json(row, { status: 201 });
