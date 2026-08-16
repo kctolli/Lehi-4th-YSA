@@ -77,6 +77,7 @@ const CallingsPage = () => {
     const [form] = Form.useForm<CallingFormValues>();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<number | null>(null);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const { data: callings, isLoading } = useQuery({
         queryKey: ['bishopric', 'callings'],
@@ -103,6 +104,12 @@ const CallingsPage = () => {
                 .map((value) => ({ text: value, value })),
         [callings]
     );
+
+    const filteredCallings = useMemo(() => {
+        const term = searchTerm.trim().toLowerCase();
+        if (!term) return callings ?? [];
+        return (callings ?? []).filter((calling) => calling.person_name.toLowerCase().includes(term) || calling.calling_name.toLowerCase().includes(term));
+    }, [callings, searchTerm]);
 
     const saveMutation = useMutation({
         mutationFn: async (values: CallingFormValues) => {
@@ -196,10 +203,12 @@ const CallingsPage = () => {
                 </Button>
             </div>
 
+            <Input.Search allowClear placeholder="Search by name or calling" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} className="max-w-sm" />
+
             <Table
                 rowKey="id"
                 loading={isLoading}
-                dataSource={callings}
+                dataSource={filteredCallings}
                 columns={[
                     { title: 'Name', dataIndex: 'person_name' },
                     {
