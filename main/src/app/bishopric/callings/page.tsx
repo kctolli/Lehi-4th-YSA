@@ -2,12 +2,11 @@
 
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { App, AutoComplete, Button, DatePicker, Form, Input, Modal, Switch, Table, Tag } from 'antd';
+import { App, AutoComplete, Button, Form, Input, Modal, Switch, Table, Tag } from 'antd';
 import { format, parseISO } from 'date-fns';
-import dayjs from 'dayjs';
 import axios from 'axios';
 import { ORGANIZATIONS } from '@/utils/organizations';
-import { formatTimestampInAppTimeZone } from '@/utils/timezone';
+import { formatTimestampInAppTimeZone, getTodayInAppTimeZone } from '@/utils/timezone';
 
 interface Calling {
     id: number;
@@ -31,20 +30,20 @@ interface CallingFormValues {
     organization?: string;
     approved?: boolean;
     in_lcr?: boolean;
-    date_extended?: dayjs.Dayjs;
-    date_sustained?: dayjs.Dayjs;
-    date_set_apart?: dayjs.Dayjs;
-    date_released?: dayjs.Dayjs;
-    date_rejected?: dayjs.Dayjs;
+    date_extended?: boolean;
+    date_sustained?: boolean;
+    date_set_apart?: boolean;
+    date_released?: boolean;
+    date_rejected?: boolean;
     notes?: string;
 }
 
 const DATE_FIELDS: { key: keyof Pick<CallingFormValues, 'date_extended' | 'date_sustained' | 'date_set_apart' | 'date_released' | 'date_rejected'>; label: string }[] = [
-    { key: 'date_extended', label: 'Date Extended' },
-    { key: 'date_sustained', label: 'Date Sustained' },
-    { key: 'date_set_apart', label: 'Date Set Apart' },
-    { key: 'date_released', label: 'Date Released' },
-    { key: 'date_rejected', label: 'Date Rejected' }
+    { key: 'date_extended', label: 'Extended' },
+    { key: 'date_sustained', label: 'Sustained' },
+    { key: 'date_set_apart', label: 'Set Apart' },
+    { key: 'date_released', label: 'Released' },
+    { key: 'date_rejected', label: 'Rejected' }
 ];
 
 const formatDate = (value: string | null): string => (value ? format(parseISO(value), 'MMM d, yyyy') : '—');
@@ -115,13 +114,19 @@ const CallingsPage = () => {
 
     const saveMutation = useMutation({
         mutationFn: async (values: CallingFormValues) => {
+            const original = editingId ? callings?.find((calling) => calling.id === editingId) : undefined;
+            const resolveDate = (turnedOn: boolean | undefined, originalValue: string | null | undefined): string | null => {
+                if (!turnedOn) return null;
+                return originalValue ?? getTodayInAppTimeZone();
+            };
+
             const payload = {
                 ...values,
-                date_extended: values.date_extended ? values.date_extended.format('YYYY-MM-DD') : null,
-                date_sustained: values.date_sustained ? values.date_sustained.format('YYYY-MM-DD') : null,
-                date_set_apart: values.date_set_apart ? values.date_set_apart.format('YYYY-MM-DD') : null,
-                date_released: values.date_released ? values.date_released.format('YYYY-MM-DD') : null,
-                date_rejected: values.date_rejected ? values.date_rejected.format('YYYY-MM-DD') : null
+                date_extended: resolveDate(values.date_extended, original?.date_extended),
+                date_sustained: resolveDate(values.date_sustained, original?.date_sustained),
+                date_set_apart: resolveDate(values.date_set_apart, original?.date_set_apart),
+                date_released: resolveDate(values.date_released, original?.date_released),
+                date_rejected: resolveDate(values.date_rejected, original?.date_rejected)
             };
             if (editingId) {
                 await axios.put(`/api/bishopric/callings/${editingId}`, payload);
@@ -172,11 +177,11 @@ const CallingsPage = () => {
             organization: calling.organization ?? undefined,
             approved: calling.approved,
             in_lcr: calling.in_lcr,
-            date_extended: calling.date_extended ? dayjs(calling.date_extended) : undefined,
-            date_sustained: calling.date_sustained ? dayjs(calling.date_sustained) : undefined,
-            date_set_apart: calling.date_set_apart ? dayjs(calling.date_set_apart) : undefined,
-            date_released: calling.date_released ? dayjs(calling.date_released) : undefined,
-            date_rejected: calling.date_rejected ? dayjs(calling.date_rejected) : undefined,
+            date_extended: !!calling.date_extended,
+            date_sustained: !!calling.date_sustained,
+            date_set_apart: !!calling.date_set_apart,
+            date_released: !!calling.date_released,
+            date_rejected: !!calling.date_rejected,
             notes: calling.notes ?? undefined
         });
         setIsModalOpen(true);
@@ -286,8 +291,8 @@ const CallingsPage = () => {
                     </Form.Item>
                     <div className="grid grid-cols-2 gap-x-4">
                         {DATE_FIELDS.map(({ key, label }) => (
-                            <Form.Item key={key} name={key} label={label}>
-                                <DatePicker className="w-full" />
+                            <Form.Item key={key} name={key} label={label} valuePropName="checked" initialValue={false}>
+                                <Switch />
                             </Form.Item>
                         ))}
                     </div>
