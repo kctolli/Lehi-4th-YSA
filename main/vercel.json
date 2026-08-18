@@ -1,0 +1,8 @@
+{
+    "crons": [
+        {
+            "path": "/api/cron/purge-lcr",
+            "schedule": "0 9 * * SUN"
+        }
+    ]
+}

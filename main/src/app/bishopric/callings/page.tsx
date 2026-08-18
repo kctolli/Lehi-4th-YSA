@@ -14,6 +14,7 @@ interface Calling {
     organization: string | null;
     approved: boolean;
     in_lcr: boolean;
+    in_lcr_at: string | null;
     submitted_at: string | null;
     date_extended: string | null;
     date_sustained: string | null;
@@ -118,6 +119,10 @@ const CallingsPage = () => {
                 if (!turnedOn) return null;
                 return originalValue ?? getTodayInAppTimeZone();
             };
+            const resolveTimestamp = (turnedOn: boolean | undefined, originalValue: string | null | undefined): string | null => {
+                if (!turnedOn) return null;
+                return originalValue ?? new Date().toISOString();
+            };
 
             const payload = {
                 ...values,
@@ -125,7 +130,8 @@ const CallingsPage = () => {
                 date_sustained: resolveDate(values.date_sustained, original?.date_sustained),
                 date_set_apart: resolveDate(values.date_set_apart, original?.date_set_apart),
                 date_released: resolveDate(values.date_released, original?.date_released),
-                date_rejected: resolveDate(values.date_rejected, original?.date_rejected)
+                date_rejected: resolveDate(values.date_rejected, original?.date_rejected),
+                in_lcr_at: resolveTimestamp(values.in_lcr, original?.in_lcr_at)
             };
             if (editingId) {
                 await axios.put(`/api/bishopric/callings/${editingId}`, payload);
@@ -157,7 +163,7 @@ const CallingsPage = () => {
     });
 
     const toggleInLcrMutation = useMutation({
-        mutationFn: ({ calling, in_lcr }: { calling: Calling; in_lcr: boolean }) => axios.put(`/api/bishopric/callings/${calling.id}`, { ...calling, in_lcr }),
+        mutationFn: ({ calling, in_lcr }: { calling: Calling; in_lcr: boolean }) => axios.put(`/api/bishopric/callings/${calling.id}`, { ...calling, in_lcr, in_lcr_at: in_lcr ? new Date().toISOString() : null }),
         onSuccess: invalidate,
         onError: () => message.error('Failed to update')
     });
