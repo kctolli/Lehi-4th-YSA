@@ -213,7 +213,7 @@ const CallingsPage = () => {
     };
 
     return (
-        <section className="flex flex-col gap-4">
+        <section className="-ml-4 flex flex-col gap-4 lg:ml-0">
             <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-semibold">Callings</h1>
                 <Button type="primary" onClick={openCreateModal}>
