@@ -124,26 +124,26 @@ const VideoAuditPage = () => {
                 loading={isLoading}
                 dataSource={audits}
                 columns={[
-                    { title: 'Name', dataIndex: 'name' },
+                    {
+                        title: 'Name',
+                        dataIndex: 'name',
+                        render: (value: string, record: VideoAudit) => (
+                            <div className="flex items-center gap-2">
+                                <button type="button" className="text-blue-600 hover:underline text-left" onClick={() => openEditModal(record)}>
+                                    {value}
+                                </button>
+                                <button type="button" aria-label={`Delete tracker entry for ${value}`} className="text-red-500 hover:text-red-700 leading-none" onClick={() => handleDelete(record)}>
+                                    ×
+                                </button>
+                            </div>
+                        )
+                    },
                     { title: 'Calling', dataIndex: 'calling', render: (value: string | null) => value ?? '—' },
                     {
                         title: 'Watched',
                         render: (_, record: VideoAudit) => <Switch checked={!!record.date_watched} onChange={(checked) => toggleWatchedMutation.mutate({ audit: record, watched: checked })} />
                     },
-                    { title: 'Date Watched', dataIndex: 'date_watched', render: formatDate },
-                    {
-                        title: 'Actions',
-                        render: (_, record: VideoAudit) => (
-                            <div className="flex gap-2">
-                                <Button size="small" onClick={() => openEditModal(record)}>
-                                    Edit
-                                </Button>
-                                <Button size="small" danger onClick={() => handleDelete(record)}>
-                                    Delete
-                                </Button>
-                            </div>
-                        )
-                    }
+                    { title: 'Date Watched', dataIndex: 'date_watched', render: formatDate }
                 ]}
             />
 

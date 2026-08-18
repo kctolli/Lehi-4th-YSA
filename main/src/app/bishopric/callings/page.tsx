@@ -228,7 +228,20 @@ const CallingsPage = () => {
                 loading={isLoading}
                 dataSource={filteredCallings}
                 columns={[
-                    { title: 'Name', dataIndex: 'person_name' },
+                    {
+                        title: 'Name',
+                        dataIndex: 'person_name',
+                        render: (value: string, record: Calling) => (
+                            <div className="flex items-center gap-2">
+                                <button type="button" className="text-blue-600 hover:underline text-left" onClick={() => openEditModal(record)}>
+                                    {value}
+                                </button>
+                                <button type="button" aria-label={`Delete calling for ${value}`} className="text-red-500 hover:text-red-700 leading-none" onClick={() => handleDelete(record)}>
+                                    ×
+                                </button>
+                            </div>
+                        )
+                    },
                     {
                         title: 'Calling',
                         dataIndex: 'calling_name',
@@ -276,19 +289,6 @@ const CallingsPage = () => {
                     {
                         title: 'In LCR',
                         render: (_, record: Calling) => <Switch checked={record.in_lcr} onChange={(checked) => toggleInLcrMutation.mutate({ calling: record, in_lcr: checked })} />
-                    },
-                    {
-                        title: 'Actions',
-                        render: (_, record: Calling) => (
-                            <div className="flex gap-2">
-                                <Button size="small" onClick={() => openEditModal(record)}>
-                                    Edit
-                                </Button>
-                                <Button size="small" danger onClick={() => handleDelete(record)}>
-                                    Delete
-                                </Button>
-                            </div>
-                        )
                     }
                 ]}
             />
