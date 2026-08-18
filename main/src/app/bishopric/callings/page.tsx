@@ -227,6 +227,7 @@ const CallingsPage = () => {
                 rowKey="id"
                 loading={isLoading}
                 dataSource={filteredCallings}
+                pagination={{ pageSize: 100 }}
                 columns={[
                     {
                         title: 'Name',
