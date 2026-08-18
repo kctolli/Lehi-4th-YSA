@@ -23,7 +23,7 @@ const BishopricLayout = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <section className="flex flex-col gap-6">
+        <section className="-ml-4 flex flex-col gap-6 lg:ml-0">
             <nav className="flex items-center justify-between border-b pb-4">
                 <div className="flex gap-4">
                     {NAV_ITEMS.map((item) => (
