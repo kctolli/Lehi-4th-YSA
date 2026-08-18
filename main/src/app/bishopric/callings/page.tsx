@@ -3,7 +3,6 @@
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { App, AutoComplete, Button, Form, Input, Modal, Switch, Table, Tag } from 'antd';
-import { format, parseISO } from 'date-fns';
 import axios from 'axios';
 import { ORGANIZATIONS } from '@/utils/organizations';
 import { formatTimestampInAppTimeZone, getTodayInAppTimeZone } from '@/utils/timezone';
@@ -46,14 +45,13 @@ const DATE_FIELDS: { key: keyof Pick<CallingFormValues, 'date_extended' | 'date_
     { key: 'date_rejected', label: 'Rejected' }
 ];
 
-const formatDate = (value: string | null): string => (value ? format(parseISO(value), 'MMM d, yyyy') : '—');
-
 const STATUSES: { value: string; label: string; color: string }[] = [
     { value: 'pending', label: 'Pending Approval', color: 'default' },
     { value: 'approved', label: 'Approved', color: 'cyan' },
     { value: 'extended', label: 'Extended', color: 'orange' },
     { value: 'sustained', label: 'Sustained', color: 'blue' },
     { value: 'set_apart', label: 'Set Apart', color: 'green' },
+    { value: 'in_lcr', label: 'In LCR', color: 'purple' },
     { value: 'released', label: 'Released', color: 'default' },
     { value: 'rejected', label: 'Rejected', color: 'red' }
 ];
@@ -63,6 +61,7 @@ const STATUS_BY_VALUE = new Map(STATUSES.map((status, index) => [status.value, {
 const getStatusValue = (calling: Calling): string => {
     if (calling.date_rejected) return 'rejected';
     if (calling.date_released) return 'released';
+    if (calling.in_lcr) return 'in_lcr';
     if (calling.date_set_apart) return 'set_apart';
     if (calling.date_sustained) return 'sustained';
     if (calling.date_extended) return 'extended';
@@ -163,6 +162,12 @@ const CallingsPage = () => {
         onError: () => message.error('Failed to update')
     });
 
+    const toggleDateMutation = useMutation({
+        mutationFn: ({ calling, field, checked }: { calling: Calling; field: 'date_extended' | 'date_sustained' | 'date_set_apart'; checked: boolean }) => axios.put(`/api/bishopric/callings/${calling.id}`, { ...calling, [field]: checked ? getTodayInAppTimeZone() : null }),
+        onSuccess: invalidate,
+        onError: () => message.error('Failed to update')
+    });
+
     const openCreateModal = () => {
         setEditingId(null);
         form.resetFields();
@@ -246,11 +251,21 @@ const CallingsPage = () => {
                             return <Tag color={status.color}>{label}</Tag>;
                         }
                     },
-                    { title: 'Sustained', dataIndex: 'date_sustained', render: formatDate },
-                    { title: 'Set Apart', dataIndex: 'date_set_apart', render: formatDate },
                     {
                         title: 'Approved',
                         render: (_, record: Calling) => <Switch checked={record.approved} onChange={(checked) => toggleApprovedMutation.mutate({ calling: record, approved: checked })} />
+                    },
+                    {
+                        title: 'Extended',
+                        render: (_, record: Calling) => <Switch checked={!!record.date_extended} onChange={(checked) => toggleDateMutation.mutate({ calling: record, field: 'date_extended', checked })} />
+                    },
+                    {
+                        title: 'Sustained',
+                        render: (_, record: Calling) => <Switch checked={!!record.date_sustained} onChange={(checked) => toggleDateMutation.mutate({ calling: record, field: 'date_sustained', checked })} />
+                    },
+                    {
+                        title: 'Set Apart',
+                        render: (_, record: Calling) => <Switch checked={!!record.date_set_apart} onChange={(checked) => toggleDateMutation.mutate({ calling: record, field: 'date_set_apart', checked })} />
                     },
                     {
                         title: 'In LCR',

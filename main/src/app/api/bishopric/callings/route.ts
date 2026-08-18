@@ -8,8 +8,9 @@ export async function GET() {
         FROM callings
         ORDER BY
             CASE
-                WHEN date_rejected IS NOT NULL THEN 6
-                WHEN date_released IS NOT NULL THEN 5
+                WHEN date_rejected IS NOT NULL THEN 7
+                WHEN date_released IS NOT NULL THEN 6
+                WHEN in_lcr THEN 5
                 WHEN date_set_apart IS NOT NULL THEN 4
                 WHEN date_sustained IS NOT NULL THEN 3
                 WHEN date_extended IS NOT NULL THEN 2
