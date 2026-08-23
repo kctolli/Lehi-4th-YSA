@@ -94,15 +94,15 @@ const CallingsTable = ({ data, loading, onEdit, onDelete, onToggleApproved, onTo
                     }
                 },
                 {
-                    title: 'Approved',
+                    title: <span className="whitespace-nowrap">Approved</span>,
                     render: (_, record: Calling) => <Switch checked={record.approved} onChange={(checked) => onToggleApproved(record, checked)} />
                 },
                 {
-                    title: 'Extended',
+                    title: <span className="whitespace-nowrap">Extended</span>,
                     render: (_, record: Calling) => <Switch checked={!!record.date_extended} onChange={(checked) => onToggleDate(record, 'date_extended', checked)} />
                 },
                 {
-                    title: 'Sustained',
+                    title: <span className="whitespace-nowrap">Sustained</span>,
                     render: (_, record: Calling) => <Switch checked={!!record.date_sustained} onChange={(checked) => onToggleDate(record, 'date_sustained', checked)} />
                 },
                 {
