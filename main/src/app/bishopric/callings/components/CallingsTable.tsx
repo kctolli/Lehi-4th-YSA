@@ -95,22 +95,27 @@ const CallingsTable = ({ data, loading, onEdit, onDelete, onToggleApproved, onTo
                 },
                 {
                     title: <span className="whitespace-nowrap">Approved</span>,
+                    width: 110,
                     render: (_, record: Calling) => <Switch checked={record.approved} onChange={(checked) => onToggleApproved(record, checked)} />
                 },
                 {
                     title: <span className="whitespace-nowrap">Extended</span>,
+                    width: 110,
                     render: (_, record: Calling) => <Switch checked={!!record.date_extended} onChange={(checked) => onToggleDate(record, 'date_extended', checked)} />
                 },
                 {
                     title: <span className="whitespace-nowrap">Sustained</span>,
+                    width: 110,
                     render: (_, record: Calling) => <Switch checked={!!record.date_sustained} onChange={(checked) => onToggleDate(record, 'date_sustained', checked)} />
                 },
                 {
                     title: 'Set Apart',
+                    width: 110,
                     render: (_, record: Calling) => <Switch checked={!!record.date_set_apart} onChange={(checked) => onToggleDate(record, 'date_set_apart', checked)} />
                 },
                 {
                     title: 'In LCR',
+                    width: 100,
                     render: (_, record: Calling) => <Switch checked={record.in_lcr} onChange={(checked) => onToggleInLcr(record, checked)} />
                 }
             ]}
