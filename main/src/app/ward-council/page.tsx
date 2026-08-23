@@ -80,7 +80,7 @@ const WardCouncilPage = () => {
                     {
                         title: 'Status',
                         dataIndex: 'approved',
-                        render: (approved: boolean) => <Tag color={approved ? 'green' : 'default'}>{approved ? 'Approved' : 'Pending Approval'}</Tag>
+                        render: (approved: boolean) => <Tag color={approved ? 'green' : 'default'}>{approved ? 'Approved' : 'Proposed'}</Tag>
                     }
                 ]}
             />
