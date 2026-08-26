@@ -52,7 +52,8 @@ const CallingsPage = () => {
                 date_set_apart: resolveDate(values.date_set_apart, editingCalling?.date_set_apart),
                 date_released: resolveDate(values.date_released, editingCalling?.date_released),
                 date_rejected: resolveDate(values.date_rejected, editingCalling?.date_rejected),
-                in_lcr_at: resolveTimestamp(values.in_lcr, editingCalling?.in_lcr_at)
+                in_lcr_at: resolveTimestamp(values.in_lcr, editingCalling?.in_lcr_at),
+                ...(editingId ? {} : { submitted_at: new Date().toISOString() })
             };
             if (editingId) {
                 await axios.put(`/api/bishopric/callings/${editingId}`, payload);
@@ -115,7 +116,7 @@ const CallingsPage = () => {
     };
 
     return (
-        <section className="flex flex-col gap-4">
+        <section className="relative left-1/2 right-1/2 -mx-[50vw] flex w-screen flex-col gap-4 px-4 lg:px-8">
             <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-semibold">Callings</h1>
                 <Button type="primary" onClick={openCreateModal}>

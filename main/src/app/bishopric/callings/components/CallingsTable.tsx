@@ -34,6 +34,7 @@ const CallingsTable = ({ data, loading, onEdit, onDelete, onToggleApproved, onTo
 
     return (
         <Table
+            className="callings-table"
             rowKey="id"
             loading={loading}
             dataSource={data}
@@ -81,30 +82,26 @@ const CallingsTable = ({ data, loading, onEdit, onDelete, onToggleApproved, onTo
                     render: (_, record: Calling) => {
                         const status = getStatus(record);
                         const label =
-                            status.value === 'pending' && record.submitted_at ? (
-                                <>
-                                    <span>Proposed</span>
-                                    <br />
-                                    {formatTimestampInAppTimeZone(record.submitted_at)}
-                                </>
-                            ) : (
-                                status.label
-                            );
-                        return <Tag color={status.color}>{label}</Tag>;
+                            status.value === 'pending' && record.submitted_at ? `Proposed ${formatTimestampInAppTimeZone(record.submitted_at)}` : status.label;
+                        return (
+                            <Tag color={status.color} className="whitespace-nowrap">
+                                {label}
+                            </Tag>
+                        );
                     }
                 },
                 {
-                    title: <span className="whitespace-nowrap">Approved</span>,
+                    title: 'Approved',
                     width: 110,
                     render: (_, record: Calling) => <Switch checked={record.approved} onChange={(checked) => onToggleApproved(record, checked)} />
                 },
                 {
-                    title: <span className="whitespace-nowrap">Extended</span>,
+                    title: 'Extended',
                     width: 110,
                     render: (_, record: Calling) => <Switch checked={!!record.date_extended} onChange={(checked) => onToggleDate(record, 'date_extended', checked)} />
                 },
                 {
-                    title: <span className="whitespace-nowrap">Sustained</span>,
+                    title: 'Sustained',
                     width: 110,
                     render: (_, record: Calling) => <Switch checked={!!record.date_sustained} onChange={(checked) => onToggleDate(record, 'date_sustained', checked)} />
                 },

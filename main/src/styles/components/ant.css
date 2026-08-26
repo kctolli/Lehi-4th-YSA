@@ -35,3 +35,7 @@
 .ant-pagination-item-active a {
     @apply !border-primary !text-primary;
 }
+
+.callings-table .ant-table-thead > tr > th {
+    @apply !text-xs whitespace-nowrap;
+}

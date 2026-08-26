@@ -25,15 +25,17 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-    const { person_name, calling_name, organization, approved, in_lcr, in_lcr_at, date_extended, date_sustained, date_set_apart, date_released, date_rejected, notes } = await request.json();
+    const { person_name, calling_name, organization, approved, in_lcr, in_lcr_at, submitted_at, date_extended, date_sustained, date_set_apart, date_released, date_rejected, notes } = await request.json();
 
     if (!person_name || !calling_name) {
         return NextResponse.json({ error: 'person_name and calling_name are required' }, { status: 400 });
     }
 
+    const submittedAt = typeof submitted_at === 'string' && !Number.isNaN(Date.parse(submitted_at)) ? submitted_at : new Date().toISOString();
+
     const [row] = await sql`
-        INSERT INTO callings (person_name, calling_name, organization, approved, in_lcr, in_lcr_at, date_extended, date_sustained, date_set_apart, date_released, date_rejected, notes)
-        VALUES (${person_name}, ${calling_name}, ${organization ?? null}, ${approved ?? false}, ${in_lcr ?? false}, ${in_lcr_at ?? null}, ${date_extended ?? null}, ${date_sustained ?? null}, ${date_set_apart ?? null}, ${date_released ?? null}, ${date_rejected ?? null}, ${notes ?? null})
+        INSERT INTO callings (person_name, calling_name, organization, approved, in_lcr, in_lcr_at, submitted_at, date_extended, date_sustained, date_set_apart, date_released, date_rejected, notes)
+        VALUES (${person_name}, ${calling_name}, ${organization ?? null}, ${approved ?? false}, ${in_lcr ?? false}, ${in_lcr_at ?? null}, ${submittedAt}, ${date_extended ?? null}, ${date_sustained ?? null}, ${date_set_apart ?? null}, ${date_released ?? null}, ${date_rejected ?? null}, ${notes ?? null})
         RETURNING id, person_name, calling_name, organization, approved, in_lcr, in_lcr_at, submitted_at, date_extended, date_sustained, date_set_apart, date_released, date_rejected, notes
     `;
 
