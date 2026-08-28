@@ -47,6 +47,7 @@ const CallingsPage = () => {
 
             const payload = {
                 ...values,
+                date_scheduled: resolveDate(values.date_scheduled, editingCalling?.date_scheduled),
                 date_extended: resolveDate(values.date_extended, editingCalling?.date_extended),
                 date_sustained: resolveDate(values.date_sustained, editingCalling?.date_sustained),
                 date_set_apart: resolveDate(values.date_set_apart, editingCalling?.date_set_apart),
@@ -91,7 +92,7 @@ const CallingsPage = () => {
     });
 
     const toggleDateMutation = useMutation({
-        mutationFn: ({ calling, field, checked }: { calling: Calling; field: 'date_extended' | 'date_sustained' | 'date_set_apart'; checked: boolean }) => axios.put(`/api/bishopric/callings/${calling.id}`, { ...calling, [field]: checked ? getTodayInAppTimeZone() : null }),
+        mutationFn: ({ calling, field, checked }: { calling: Calling; field: 'date_scheduled' | 'date_extended' | 'date_sustained' | 'date_set_apart'; checked: boolean }) => axios.put(`/api/bishopric/callings/${calling.id}`, { ...calling, [field]: checked ? getTodayInAppTimeZone() : null }),
         onSuccess: invalidate,
         onError: () => message.error('Failed to update')
     });

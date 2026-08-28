@@ -7,6 +7,7 @@ export interface Calling {
     in_lcr: boolean;
     in_lcr_at: string | null;
     submitted_at: string | null;
+    date_scheduled: string | null;
     date_extended: string | null;
     date_sustained: string | null;
     date_set_apart: string | null;
@@ -21,6 +22,7 @@ export interface CallingFormValues {
     organization?: string;
     approved?: boolean;
     in_lcr?: boolean;
+    date_scheduled?: boolean;
     date_extended?: boolean;
     date_sustained?: boolean;
     date_set_apart?: boolean;
@@ -29,7 +31,8 @@ export interface CallingFormValues {
     notes?: string;
 }
 
-export const DATE_FIELDS: { key: keyof Pick<CallingFormValues, 'date_extended' | 'date_sustained' | 'date_set_apart' | 'date_released' | 'date_rejected'>; label: string }[] = [
+export const DATE_FIELDS: { key: keyof Pick<CallingFormValues, 'date_scheduled' | 'date_extended' | 'date_sustained' | 'date_set_apart' | 'date_released' | 'date_rejected'>; label: string }[] = [
+    { key: 'date_scheduled', label: 'Scheduled' },
     { key: 'date_extended', label: 'Extended' },
     { key: 'date_sustained', label: 'Sustained' },
     { key: 'date_set_apart', label: 'Set Apart' },
@@ -40,6 +43,7 @@ export const DATE_FIELDS: { key: keyof Pick<CallingFormValues, 'date_extended' |
 export const STATUSES: { value: string; label: string; color: string }[] = [
     { value: 'pending', label: 'Proposed', color: 'default' },
     { value: 'approved', label: 'Approved', color: 'cyan' },
+    { value: 'scheduled', label: 'Scheduled', color: 'gold' },
     { value: 'extended', label: 'Extended', color: 'orange' },
     { value: 'sustained', label: 'Sustained', color: 'blue' },
     { value: 'set_apart', label: 'Set Apart', color: 'green' },
@@ -57,6 +61,7 @@ export const getStatusValue = (calling: Calling): string => {
     if (calling.date_set_apart) return 'set_apart';
     if (calling.date_sustained) return 'sustained';
     if (calling.date_extended) return 'extended';
+    if (calling.date_scheduled) return 'scheduled';
     if (calling.approved) return 'approved';
     return 'pending';
 };

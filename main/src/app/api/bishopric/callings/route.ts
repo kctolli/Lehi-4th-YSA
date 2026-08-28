@@ -4,16 +4,17 @@ import { sql } from '@/lib/db';
 export async function GET() {
     const rows = await sql`
         SELECT id, person_name, calling_name, organization, approved, in_lcr, in_lcr_at, submitted_at,
-               date_extended, date_sustained, date_set_apart, date_released, date_rejected, notes
+               date_scheduled, date_extended, date_sustained, date_set_apart, date_released, date_rejected, notes
         FROM callings
         ORDER BY
             CASE
-                WHEN date_rejected IS NOT NULL THEN 7
-                WHEN date_released IS NOT NULL THEN 6
-                WHEN in_lcr THEN 5
-                WHEN date_set_apart IS NOT NULL THEN 4
-                WHEN date_sustained IS NOT NULL THEN 3
-                WHEN date_extended IS NOT NULL THEN 2
+                WHEN date_rejected IS NOT NULL THEN 8
+                WHEN date_released IS NOT NULL THEN 7
+                WHEN in_lcr THEN 6
+                WHEN date_set_apart IS NOT NULL THEN 5
+                WHEN date_sustained IS NOT NULL THEN 4
+                WHEN date_extended IS NOT NULL THEN 3
+                WHEN date_scheduled IS NOT NULL THEN 2
                 WHEN approved THEN 1
                 ELSE 0
             END,
@@ -25,7 +26,7 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-    const { person_name, calling_name, organization, approved, in_lcr, in_lcr_at, submitted_at, date_extended, date_sustained, date_set_apart, date_released, date_rejected, notes } = await request.json();
+    const { person_name, calling_name, organization, approved, in_lcr, in_lcr_at, submitted_at, date_scheduled, date_extended, date_sustained, date_set_apart, date_released, date_rejected, notes } = await request.json();
 
     if (!person_name || !calling_name) {
         return NextResponse.json({ error: 'person_name and calling_name are required' }, { status: 400 });
@@ -34,9 +35,9 @@ export async function POST(request: NextRequest) {
     const submittedAt = typeof submitted_at === 'string' && !Number.isNaN(Date.parse(submitted_at)) ? submitted_at : new Date().toISOString();
 
     const [row] = await sql`
-        INSERT INTO callings (person_name, calling_name, organization, approved, in_lcr, in_lcr_at, submitted_at, date_extended, date_sustained, date_set_apart, date_released, date_rejected, notes)
-        VALUES (${person_name}, ${calling_name}, ${organization ?? null}, ${approved ?? false}, ${in_lcr ?? false}, ${in_lcr_at ?? null}, ${submittedAt}, ${date_extended ?? null}, ${date_sustained ?? null}, ${date_set_apart ?? null}, ${date_released ?? null}, ${date_rejected ?? null}, ${notes ?? null})
-        RETURNING id, person_name, calling_name, organization, approved, in_lcr, in_lcr_at, submitted_at, date_extended, date_sustained, date_set_apart, date_released, date_rejected, notes
+        INSERT INTO callings (person_name, calling_name, organization, approved, in_lcr, in_lcr_at, submitted_at, date_scheduled, date_extended, date_sustained, date_set_apart, date_released, date_rejected, notes)
+        VALUES (${person_name}, ${calling_name}, ${organization ?? null}, ${approved ?? false}, ${in_lcr ?? false}, ${in_lcr_at ?? null}, ${submittedAt}, ${date_scheduled ?? null}, ${date_extended ?? null}, ${date_sustained ?? null}, ${date_set_apart ?? null}, ${date_released ?? null}, ${date_rejected ?? null}, ${notes ?? null})
+        RETURNING id, person_name, calling_name, organization, approved, in_lcr, in_lcr_at, submitted_at, date_scheduled, date_extended, date_sustained, date_set_apart, date_released, date_rejected, notes
     `;
 
     return NextResponse.json(row, { status: 201 });

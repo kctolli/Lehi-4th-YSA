@@ -12,7 +12,7 @@ interface CallingsTableProps {
     onDelete: (calling: Calling) => void;
     onToggleApproved: (calling: Calling, approved: boolean) => void;
     onToggleInLcr: (calling: Calling, in_lcr: boolean) => void;
-    onToggleDate: (calling: Calling, field: 'date_extended' | 'date_sustained' | 'date_set_apart', checked: boolean) => void;
+    onToggleDate: (calling: Calling, field: 'date_scheduled' | 'date_extended' | 'date_sustained' | 'date_set_apart', checked: boolean) => void;
 }
 
 const CallingsTable = ({ data, loading, onEdit, onDelete, onToggleApproved, onToggleInLcr, onToggleDate }: CallingsTableProps) => {
@@ -94,6 +94,11 @@ const CallingsTable = ({ data, loading, onEdit, onDelete, onToggleApproved, onTo
                     title: 'Approved',
                     width: 110,
                     render: (_, record: Calling) => <Switch checked={record.approved} onChange={(checked) => onToggleApproved(record, checked)} />
+                },
+                {
+                    title: 'Scheduled',
+                    width: 110,
+                    render: (_, record: Calling) => <Switch checked={!!record.date_scheduled} onChange={(checked) => onToggleDate(record, 'date_scheduled', checked)} />
                 },
                 {
                     title: 'Extended',
