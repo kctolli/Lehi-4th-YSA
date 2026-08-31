@@ -9,7 +9,7 @@
  *
  * Bump CACHE_VERSION whenever this file changes to retire the old caches.
  */
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const PRECACHE = `precache-${CACHE_VERSION}`;
 const RUNTIME = `runtime-${CACHE_VERSION}`;
 const OFFLINE_URL = '/offline.html';

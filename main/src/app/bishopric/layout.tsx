@@ -7,7 +7,8 @@ import { Button } from 'antd';
 
 const NAV_ITEMS = [
     { href: '/bishopric/callings', label: 'Callings' },
-    { href: '/bishopric/video-audit', label: 'Video Audit Tracker' }
+    { href: '/bishopric/video-audit', label: 'Video Audit Tracker' },
+    { href: '/bishopric/sacrament-attendance', label: 'Sacrament Attendance' }
 ];
 
 const BishopricLayout = ({ children }: { children: ReactNode }) => {
@@ -24,8 +25,8 @@ const BishopricLayout = ({ children }: { children: ReactNode }) => {
 
     return (
         <section className="-ml-4 flex flex-col gap-6 lg:ml-0">
-            <nav className="flex items-center justify-between border-b pb-4">
-                <div className="flex gap-4">
+            <nav className="flex flex-wrap items-center justify-between gap-2 border-b pb-4">
+                <div className="flex flex-wrap gap-4">
                     {NAV_ITEMS.map((item) => (
                         <Link key={item.href} href={item.href} className={pathname === item.href ? 'font-semibold' : 'text-gray-500'}>
                             {item.label}
