@@ -1,6 +1,6 @@
 'use client';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+/*import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { App, AutoComplete, Button, Form, Input, Table, Tag } from 'antd';
 import axios from 'axios';
 import { ORGANIZATIONS } from '@/utils/organizations';
@@ -22,7 +22,7 @@ interface WardCouncilFormValues {
 const fetchEntries = async (): Promise<WardCouncilEntry[]> => {
     const { data } = await axios.get<WardCouncilEntry[]>('/api/ward-council');
     return Array.isArray(data) ? data : [];
-};
+};*/
 
 const WardCouncilPage = () => {
     /*const { message } = App.useApp();
