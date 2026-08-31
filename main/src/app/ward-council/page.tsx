@@ -25,7 +25,7 @@ const fetchEntries = async (): Promise<WardCouncilEntry[]> => {
 };
 
 const WardCouncilPage = () => {
-    const { message } = App.useApp();
+    /*const { message } = App.useApp();
     const queryClient = useQueryClient();
     const [form] = Form.useForm<WardCouncilFormValues>();
 
@@ -47,11 +47,15 @@ const WardCouncilPage = () => {
     const handleSubmit = async () => {
         const values = await form.validateFields();
         submitMutation.mutate(values);
-    };
+    };*/
 
     return (
         <section className="flex flex-col gap-8">
-            <div className="flex flex-col gap-4">
+            <p>
+                Page is currently turned off based on Bishop Mondragon's recommendation. 
+                Please contact the Bishopric for questions.
+            </p>
+            {/*<div className="flex flex-col gap-4">
                 <h2 className="text-2xl font-semibold">Ward Council</h2>
                 <Form form={form} layout="vertical" className="max-w-md">
                     <Form.Item name="person_name" label="Name" rules={[{ required: true }]}>
@@ -67,23 +71,7 @@ const WardCouncilPage = () => {
                         Submit
                     </Button>
                 </Form>
-            </div>
-
-            <Table
-                rowKey="id"
-                loading={isLoading}
-                dataSource={entries}
-                columns={[
-                    { title: 'Name', dataIndex: 'person_name' },
-                    { title: 'Calling', dataIndex: 'calling_name' },
-                    { title: 'Organization', dataIndex: 'organization', render: (value: string | null) => value ?? '—' },
-                    {
-                        title: 'Status',
-                        dataIndex: 'approved',
-                        render: (approved: boolean) => <Tag color={approved ? 'green' : 'default'}>{approved ? 'Approved' : 'Proposed'}</Tag>
-                    }
-                ]}
-            />
+            </div>*/}
         </section>
     );
 };
