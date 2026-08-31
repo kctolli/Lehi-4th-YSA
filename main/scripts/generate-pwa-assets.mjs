@@ -164,22 +164,21 @@ const SCENE = `
   </g>
 
   <!-- done badge -->
-  <circle cx="446" cy="410" r="42" fill="#FFFFFF" />
-  <circle cx="446" cy="410" r="34" fill="#2E9E43" />
-  <path d="M430 410 l10 11 l21 -27" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />`;
+  <circle cx="436" cy="404" r="42" fill="#FFFFFF" />
+  <circle cx="436" cy="404" r="34" fill="#2E9E43" />
+  <path d="M420 404 l10 11 l21 -27" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />`;
 
-const buildSvg = (radius, scale = 1) => `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+const buildSvg = (radius) => `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
   <defs>${defs(radius)}</defs>
-  <rect x="0" y="0" width="512" height="512" fill="${SKY_FALLBACK}" />
   <g clip-path="url(#frame)">
-    <g transform="translate(256 256) scale(${scale}) translate(-256 -256)">
-      ${SCENE}
-    </g>
+    ${SCENE}
   </g>
 </svg>`;
 
-const framed = buildSvg(112, 1);
-const maskable = buildSvg(0, 0.84);
+// Framed icon: rounded corners. Maskable: full-bleed so launcher masks crop only
+// the sky/mountain edges — the temple, directory and clipboard stay centred.
+const framed = buildSvg(112);
+const maskable = buildSvg(0);
 
 const targets = [
     { file: 'src/app/icon.png', svg: framed, size: 512 },

@@ -28,8 +28,9 @@
                 color: #efe9e1;
             }
             .mark {
-                width: 88px;
-                height: 88px;
+                width: 96px;
+                height: 96px;
+                border-radius: 20px;
             }
             h1 {
                 margin: 0;
@@ -59,29 +60,7 @@
         </style>
     </head>
     <body>
-        <svg class="mark" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path
-                fill="#efe9e1"
-                d="M256 96 C 322 96 372 138 386 202 C 396 252 390 306 374 348 C 420 366 452 400 460 434 L 52 434 C 60 400 92 366 138 348 C 122 306 116 252 126 202 C 140 138 190 96 256 96 Z"
-            />
-            <g fill="none" stroke="#37281e" stroke-width="11" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M206 148 C 228 126 284 126 306 148" />
-                <path d="M150 172 C 132 240 140 312 170 354" />
-                <path d="M362 172 C 380 240 372 312 342 354" />
-                <path d="M188 158 C 178 202 180 244 192 286" />
-                <path d="M324 158 C 334 202 332 244 320 286" />
-                <path d="M210 208 C 223 219 244 219 253 209" />
-                <path d="M259 209 C 268 219 289 219 302 208" />
-                <path d="M212 186 C 226 178 243 179 251 186" />
-                <path d="M261 186 C 269 179 286 178 300 186" />
-                <path d="M255 212 C 252 230 250 242 247 250 C 252 254 260 254 265 250" />
-                <path d="M224 270 C 240 262 272 262 288 270" />
-                <path d="M198 250 C 195 302 220 350 256 368 C 292 350 317 302 314 250" />
-                <path d="M236 304 C 242 320 250 329 256 333 C 262 329 270 320 276 304" />
-                <path d="M150 350 C 190 376 223 396 256 408 C 289 396 322 376 362 350" />
-                <path d="M176 376 C 202 394 229 406 256 414 C 283 406 310 394 336 376" />
-            </g>
-        </svg>
+        <img class="mark" src="/icons/icon-192.png" alt="" width="96" height="96" />
         <h1>You're offline</h1>
         <p>This page isn't available without a connection. Reconnect and try again.</p>
         <button type="button" onclick="location.reload()">Retry</button>
