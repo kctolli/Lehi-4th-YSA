@@ -11,8 +11,11 @@ export async function GET(request: NextRequest) {
 
     const removed = await sql`
         DELETE FROM callings
-        WHERE in_lcr = true AND in_lcr_at IS NOT NULL AND in_lcr_at < now() - interval '14 days'
-        RETURNING id, person_name, calling_name, in_lcr_at
+        WHERE in_lcr = true
+          AND in_lcr_at IS NOT NULL
+          AND in_lcr_at < now() - interval '14 days'
+          AND date_set_apart IS NOT NULL
+        RETURNING id, person_name, calling_name, in_lcr_at, date_set_apart
     `;
 
     return NextResponse.json({ removedCount: removed.length, removed });
