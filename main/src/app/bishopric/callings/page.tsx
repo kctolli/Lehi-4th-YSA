@@ -28,6 +28,8 @@ const CallingsPage = () => {
 
     const editingCalling = useMemo(() => (editingId ? (callings ?? []).find((calling) => calling.id === editingId) ?? null : null), [callings, editingId]);
 
+    const existingNames = useMemo(() => (callings ?? []).filter((calling) => calling.id !== editingId).map((calling) => calling.person_name), [callings, editingId]);
+
     const filteredCallings = useMemo(() => {
         const term = searchTerm.trim().toLowerCase();
         if (!term) return callings ?? [];
@@ -137,7 +139,7 @@ const CallingsPage = () => {
                 onToggleDate={(calling, field, checked) => toggleDateMutation.mutate({ calling, field, checked })}
             />
 
-            <CallingFormModal open={isModalOpen} editingCalling={editingCalling} confirmLoading={saveMutation.isPending} onCancel={() => setIsModalOpen(false)} onSubmit={(values) => saveMutation.mutate(values)} />
+            <CallingFormModal open={isModalOpen} editingCalling={editingCalling} confirmLoading={saveMutation.isPending} existingNames={existingNames} onCancel={() => setIsModalOpen(false)} onSubmit={(values) => saveMutation.mutate(values)} />
         </section>
     );
 };

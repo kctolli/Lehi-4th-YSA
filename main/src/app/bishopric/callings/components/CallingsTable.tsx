@@ -1,7 +1,8 @@
 'use client';
 
 import { useMemo } from 'react';
-import { Switch, Table, Tag } from 'antd';
+import { Switch, Table, Tag, Tooltip } from 'antd';
+import { FileTextOutlined } from '@ant-design/icons';
 import { formatTimestampInAppTimeZone } from '@/utils/timezone';
 import { Calling, STATUSES, getStatus, getStatusValue } from '../types';
 
@@ -73,6 +74,18 @@ const CallingsTable = ({ data, loading, onEdit, onDelete, onToggleApproved, onTo
                     filters: organizationFilters,
                     filterSearch: true,
                     onFilter: (value, record: Calling) => record.organization === value
+                },
+                {
+                    title: 'Notes',
+                    dataIndex: 'notes',
+                    width: 70,
+                    align: 'center',
+                    render: (notes: string | null) =>
+                        notes ? (
+                            <Tooltip title={notes}>
+                                <FileTextOutlined className="text-gray-500" aria-label="View notes" />
+                            </Tooltip>
+                        ) : null
                 },
                 {
                     title: 'Status',

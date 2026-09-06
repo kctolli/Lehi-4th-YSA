@@ -9,11 +9,12 @@ interface CallingFormModalProps {
     open: boolean;
     editingCalling: Calling | null;
     confirmLoading: boolean;
+    existingNames: string[];
     onCancel: () => void;
     onSubmit: (values: CallingFormValues) => void;
 }
 
-const CallingFormModal = ({ open, editingCalling, confirmLoading, onCancel, onSubmit }: CallingFormModalProps) => {
+const CallingFormModal = ({ open, editingCalling, confirmLoading, existingNames, onCancel, onSubmit }: CallingFormModalProps) => {
     const [form] = Form.useForm<CallingFormValues>();
 
     useEffect(() => {
@@ -45,7 +46,21 @@ const CallingFormModal = ({ open, editingCalling, confirmLoading, onCancel, onSu
     return (
         <Modal title={editingCalling ? 'Edit Calling' : 'New Calling'} open={open} onCancel={onCancel} onOk={handleOk} confirmLoading={confirmLoading} destroyOnClose width={640}>
             <Form form={form} layout="vertical">
-                <Form.Item name="person_name" label="Name" rules={[{ required: true }]}>
+                <Form.Item
+                    name="person_name"
+                    label="Name"
+                    rules={[
+                        { required: true },
+                        {
+                            validator: (_, value) => {
+                                if (!value?.trim()) return Promise.resolve();
+                                const normalized = value.trim().toLowerCase();
+                                const isDuplicate = existingNames.some((name) => name.trim().toLowerCase() === normalized);
+                                return isDuplicate ? Promise.reject(new Error('This name is already in the callings table')) : Promise.resolve();
+                            }
+                        }
+                    ]}
+                >
                     <Input />
                 </Form.Item>
                 <Form.Item name="calling_name" label="Calling" rules={[{ required: true }]}>
