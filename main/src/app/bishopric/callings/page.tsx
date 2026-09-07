@@ -120,14 +120,14 @@ const CallingsPage = () => {
 
     return (
         <section className="relative left-1/2 right-1/2 -mx-[50vw] flex w-screen flex-col gap-4 px-4 lg:px-8">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <h1 className="text-2xl font-semibold">Callings</h1>
-                <Button type="primary" onClick={openCreateModal}>
+                <Button type="primary" onClick={openCreateModal} className="w-full sm:w-auto">
                     New Calling
                 </Button>
             </div>
 
-            <Input.Search allowClear placeholder="Search by name or calling" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} className="max-w-sm" />
+            <Input.Search allowClear placeholder="Search by name or calling" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} className="w-full sm:max-w-sm" />
 
             <CallingsTable
                 data={filteredCallings}

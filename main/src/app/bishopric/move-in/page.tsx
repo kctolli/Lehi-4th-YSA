@@ -76,7 +76,7 @@ const MoveInPage = () => {
                         key: 'age',
                         render: (_, record: MoveIn) => calculateAge(record.birthday) ?? '—'
                     },
-                    { title: 'Address', dataIndex: 'address', render: (value: string) => <span className="whitespace-pre-wrap">{value}</span> },
+                    { title: 'Address', dataIndex: 'address', render: (value: string) => <span className="block max-w-[16rem] whitespace-pre-wrap">{value}</span> },
                     { title: 'Submitted', dataIndex: 'created_at', render: formatDate },
                     {
                         title: '',

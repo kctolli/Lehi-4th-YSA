@@ -112,9 +112,9 @@ const VideoAuditPage = () => {
 
     return (
         <section className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <h1 className="text-2xl font-semibold">Video Audit Tracker</h1>
-                <Button type="primary" onClick={openCreateModal}>
+                <Button type="primary" onClick={openCreateModal} className="w-full sm:w-auto">
                     New Entry
                 </Button>
             </div>
@@ -123,6 +123,7 @@ const VideoAuditPage = () => {
                 rowKey="id"
                 loading={isLoading}
                 dataSource={audits}
+                scroll={{ x: 'max-content' }}
                 columns={[
                     {
                         title: 'Name',

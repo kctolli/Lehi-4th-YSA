@@ -27,16 +27,18 @@ const BishopricLayout = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <section className="-ml-4 flex flex-col gap-6 lg:ml-0">
-            <nav className="flex flex-wrap items-center justify-between gap-2 border-b pb-4">
-                <div className="flex flex-wrap gap-4">
+        <section className="flex flex-col gap-6">
+            <nav className="flex flex-col gap-3 border-b pb-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+                <div className="-mx-4 flex gap-4 overflow-x-auto px-4 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0 [&::-webkit-scrollbar]:hidden">
                     {NAV_ITEMS.map((item) => (
-                        <Link key={item.href} href={item.href} className={pathname === item.href ? 'font-semibold' : 'text-gray-500'}>
+                        <Link key={item.href} href={item.href} className={`whitespace-nowrap ${pathname === item.href ? 'font-semibold' : 'text-gray-500'}`}>
                             {item.label}
                         </Link>
                     ))}
                 </div>
-                <Button onClick={handleLogout}>Log out</Button>
+                <Button onClick={handleLogout} className="self-end sm:self-auto">
+                    Log out
+                </Button>
             </nav>
             {children}
         </section>
