@@ -98,7 +98,6 @@ const MoveInPage = () => {
                 <Form.Item
                     name="birthday"
                     label="Birthday"
-                    extra={`${AGE_RANGE_MESSAGE}.`}
                     rules={[
                         { required: true, message: 'Birthday is required' },
                         {
