@@ -2,18 +2,12 @@ import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 
 import Footer from '@/components/Footer';
-import ServiceWorkerRegister from '@/components/ServiceWorkerRegister';
 import Providers from './providers';
 import './globals.css';
 
 export const metadata: Metadata = {
     applicationName: 'Lehi 4th',
-    title: 'Lehi YSA 4th Ward, 26–35',
-    appleWebApp: {
-        capable: true,
-        statusBarStyle: 'black-translucent',
-        title: 'Lehi 4th'
-    }
+    title: 'Lehi YSA 4th Ward, 26–35'
 };
 
 export const viewport: Viewport = {
@@ -29,7 +23,6 @@ const RootLayout = ({ children }: { children: ReactNode }) => (
                     <Footer />
                 </section>
             </Providers>
-            <ServiceWorkerRegister />
         </body>
     </html>
 );

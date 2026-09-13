@@ -2,14 +2,14 @@
 
 import { useEffect } from 'react';
 
-/** Registers the PWA service worker once the page has loaded. Renders nothing. */
+/** Registers the PWA service worker, scoped to /bishopric, once the page has loaded. Renders nothing. */
 const ServiceWorkerRegister = () => {
     useEffect(() => {
         if (process.env.NODE_ENV !== 'production') return;
         if (typeof window === 'undefined' || !('serviceWorker' in navigator)) return;
 
         const register = () => {
-            navigator.serviceWorker.register('/sw.js').catch((error) => {
+            navigator.serviceWorker.register('/sw.js', { scope: '/bishopric/' }).catch((error) => {
                 console.error('Service worker registration failed', error);
             });
         };

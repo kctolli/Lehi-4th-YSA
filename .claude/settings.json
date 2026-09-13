@@ -27,7 +27,13 @@
       "Bash(npx --yes playwright install chromium --with-deps)",
       "Bash(npx --yes playwright install chromium)",
       "Bash(npm init *)",
-      "Bash(node check.js)"
+      "Bash(node check.js)",
+      "Bash(git rm *)",
+      "Bash(curl -sv http://localhost:3000/bishopric/manifest.webmanifest)",
+      "Bash(curl -s -o /dev/null -w \"manifest status: %{http_code}\\\\n\" http://localhost:3000/bishopric/manifest.webmanifest)",
+      "Bash(curl -s http://localhost:3000/bishopric/manifest.webmanifest)",
+      "Bash(curl -s http://localhost:3000/)",
+      "Bash(curl -s http://localhost:3000/bishopric/login)"
     ]
   }
 }

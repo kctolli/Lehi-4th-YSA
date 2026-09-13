@@ -7,7 +7,7 @@ export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
     if (pathname.startsWith('/bishopric') || pathname.startsWith('/api/bishopric')) {
-        if (pathname === '/bishopric/login' || pathname === '/api/bishopric/login') {
+        if (pathname === '/bishopric/login' || pathname === '/api/bishopric/login' || pathname === '/bishopric/manifest.webmanifest') {
             return NextResponse.next();
         }
 

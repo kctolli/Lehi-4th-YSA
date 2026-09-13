@@ -1,12 +1,13 @@
-import type { MetadataRoute } from 'next';
+import { NextResponse } from 'next/server';
 
-const manifest = (): MetadataRoute.Manifest => ({
-    id: '/',
-    name: 'Lehi YSA 4th Ward',
-    short_name: 'Lehi 4th',
-    description: 'Ward tools for the Lehi YSA 4th Ward — callings, video audit tracker, ward council, and photos.',
+// Scoped to /bishopric so only the Bishopric area is installable as a PWA.
+const manifest = {
+    id: '/bishopric',
+    name: 'Lehi YSA 4th Ward Bishopric',
+    short_name: 'Bishopric',
+    description: 'Bishopric tools for the Lehi YSA 4th Ward — callings, video audit tracker, ward council, and photos.',
     start_url: '/bishopric/callings',
-    scope: '/',
+    scope: '/bishopric',
     display: 'standalone',
     orientation: 'portrait',
     background_color: '#37281E',
@@ -18,6 +19,6 @@ const manifest = (): MetadataRoute.Manifest => ({
         { src: '/icons/maskable-192.png', sizes: '192x192', type: 'image/png', purpose: 'maskable' },
         { src: '/icons/maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
     ]
-});
+};
 
-export default manifest;
+export const GET = () => NextResponse.json(manifest, { headers: { 'Content-Type': 'application/manifest+json' } });
