@@ -6,7 +6,11 @@
         },
         {
             "path": "/api/cron/purge-move-ins",
-            "schedule": "0 9 * * *"
+            "schedule": "15 9 * * 0"
+        },
+        {
+            "path": "/api/cron/purge-sacrament-attendance",
+            "schedule": "30 9 * * 0"
         }
     ]
 }
