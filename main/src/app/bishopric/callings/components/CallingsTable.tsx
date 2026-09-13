@@ -126,11 +126,13 @@ const CallingsTable = ({ data, loading, onEdit, onDelete, onToggleApproved, onTo
                 {
                     title: 'Set Apart',
                     width: 110,
+                    sorter: (a: Calling, b: Calling) => Number(!!a.date_set_apart) - Number(!!b.date_set_apart),
                     render: (_, record: Calling) => <Switch checked={!!record.date_set_apart} onChange={(checked) => onToggleDate(record, 'date_set_apart', checked)} />
                 },
                 {
                     title: 'In LCR',
                     width: 100,
+                    sorter: (a: Calling, b: Calling) => Number(a.in_lcr) - Number(b.in_lcr),
                     render: (_, record: Calling) => <Switch checked={record.in_lcr} onChange={(checked) => onToggleInLcr(record, checked)} />
                 }
             ]}

@@ -67,9 +67,7 @@ const MoveInPage = () => {
             <section className="mx-auto flex w-full max-w-md flex-col items-center gap-4 pt-16 text-center">
                 <h1 className="text-2xl font-semibold">Thank you!</h1>
                 <p>Your move-in information has been submitted.</p>
-                <Button type="primary" onClick={() => setSubmitted(false)}>
-                    Add another
-                </Button>
+                <p>Checkout out our <a href="/">ward website</a> for more information.</p>
             </section>
         );
     }
