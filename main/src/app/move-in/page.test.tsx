@@ -43,6 +43,8 @@ const fillValidForm = async (user: ReturnType<typeof userEvent.setup>, birthday 
     await user.type(screen.getByLabelText('First Name'), 'Jane');
     await user.type(screen.getByLabelText('Last Name'), 'Doe');
     await user.type(screen.getByLabelText(/Member Record Number/), '123-4567-8901');
+    await user.click(screen.getByLabelText('Gender'));
+    await user.click(await screen.findByTitle('Female'));
     await user.clear(screen.getByTestId('birthday-input'));
     await user.type(screen.getByTestId('birthday-input'), birthday);
     await user.type(screen.getByLabelText('Address'), '123 Main St');
@@ -61,6 +63,7 @@ describe('<MoveInPage /> (public form)', () => {
         expect(screen.getByLabelText('First Name')).toBeInTheDocument();
         expect(screen.getByLabelText('Last Name')).toBeInTheDocument();
         expect(screen.getByLabelText(/Member Record Number/)).toBeInTheDocument();
+        expect(screen.getByLabelText('Gender')).toBeInTheDocument();
         expect(screen.getByLabelText('Address')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Submit' })).toBeInTheDocument();
     });
@@ -73,6 +76,7 @@ describe('<MoveInPage /> (public form)', () => {
 
         expect(await screen.findByText('First name is required')).toBeInTheDocument();
         expect(screen.getByText('Last name is required')).toBeInTheDocument();
+        expect(screen.getByText('Please select a gender')).toBeInTheDocument();
         expect(screen.getByText('Birthday is required')).toBeInTheDocument();
         expect(screen.getByText('Address is required')).toBeInTheDocument();
         expect(post).not.toHaveBeenCalled();
@@ -101,6 +105,7 @@ describe('<MoveInPage /> (public form)', () => {
                 first_name: 'Jane',
                 last_name: 'Doe',
                 member_record_number: '123-4567-8901',
+                gender: 'Female',
                 birthday: inRangeBirthday,
                 address: '123 Main St'
             })
@@ -120,6 +125,8 @@ describe('<MoveInPage /> (public form)', () => {
 
         await user.type(screen.getByLabelText('First Name'), 'Jane');
         await user.type(screen.getByLabelText('Last Name'), 'Doe');
+        await user.click(screen.getByLabelText('Gender'));
+        await user.click(await screen.findByTitle('Female'));
         await user.type(screen.getByTestId('birthday-input'), inRangeBirthday);
         await user.type(screen.getByLabelText('Address'), '123 Main St');
         await user.click(screen.getByRole('button', { name: 'Submit' }));

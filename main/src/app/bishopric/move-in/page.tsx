@@ -1,8 +1,8 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { App, Table } from 'antd';
 import { differenceInYears, format, parseISO } from 'date-fns';
+import { App, Switch, Table } from 'antd';
 import axios from 'axios';
 
 interface MoveIn {
@@ -10,16 +10,19 @@ interface MoveIn {
     first_name: string;
     last_name: string;
     member_record_number: string | null;
+    gender: string;
     birthday: string;
     address: string;
+    moved_in: boolean;
+    moved_in_at: string | null;
     created_at: string;
 }
 
-const formatDate = (value: string | null): string => (value ? format(parseISO(value), 'MMM d, yyyy') : '—');
+const formatDate = (value: string | null): string => 
+    (value ? format(parseISO(value), 'MMM d, yyyy') : '—');
 
-const calculateAge = (birthday: string | null): number | null => {
-    return (!birthday ? null : differenceInYears(new Date(), parseISO(birthday)));
-};
+const calculateAge = (birthday: string | null): number | null => 
+    (!birthday ? null : differenceInYears(new Date(), parseISO(birthday)));
 
 const MoveInPage = () => {
     const { message, modal } = App.useApp();
@@ -42,6 +45,12 @@ const MoveInPage = () => {
             invalidate();
         },
         onError: () => message.error('Failed to delete entry')
+    });
+
+    const toggleMovedInMutation = useMutation({
+        mutationFn: ({ id, moved_in }: { id: number; moved_in: boolean }) => axios.put(`/api/bishopric/move-ins/${id}`, { moved_in }),
+        onSuccess: invalidate,
+        onError: () => message.error('Failed to update')
     });
 
     const handleDelete = (record: MoveIn) => {
@@ -70,6 +79,7 @@ const MoveInPage = () => {
                         render: (_, record: MoveIn) => `${record.first_name} ${record.last_name}`
                     },
                     { title: 'Member Record Number', dataIndex: 'member_record_number', render: (value: string | null) => value || '—' },
+                    { title: 'Gender', dataIndex: 'gender' },
                     { title: 'Birthday', dataIndex: 'birthday', render: formatDate },
                     {
                         title: 'Age',
@@ -78,6 +88,11 @@ const MoveInPage = () => {
                     },
                     { title: 'Address', dataIndex: 'address', render: (value: string) => <span className="block max-w-[16rem] whitespace-pre-wrap">{value}</span> },
                     { title: 'Submitted', dataIndex: 'created_at', render: formatDate },
+                    {
+                        title: 'Moved In',
+                        key: 'moved_in',
+                        render: (_, record: MoveIn) => <Switch checked={record.moved_in} onChange={(checked) => toggleMovedInMutation.mutate({ id: record.id, moved_in: checked })} />
+                    },
                     {
                         title: '',
                         key: 'actions',

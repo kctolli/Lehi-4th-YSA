@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { App, Button, DatePicker, Form, Input } from 'antd';
+import { App, Button, DatePicker, Form, Input, Select } from 'antd';
 import dayjs, { type Dayjs } from 'dayjs';
 import axios from 'axios';
 
@@ -10,10 +10,16 @@ const MIN_AGE = 25;
 const MAX_AGE = 36;
 const AGE_RANGE_MESSAGE = `This form is only for members ages ${MIN_AGE} to ${MAX_AGE}`;
 
+const GENDER_OPTIONS = [
+    { label: 'Male', value: 'Male' },
+    { label: 'Female', value: 'Female' }
+];
+
 interface MoveInFormValues {
     first_name: string;
     last_name: string;
     member_record_number?: string | null;
+    gender: string;
     birthday: Dayjs;
     address: string;
 }
@@ -22,6 +28,7 @@ interface MoveInPayload {
     first_name: string;
     last_name: string;
     member_record_number: string;
+    gender: string;
     birthday: string;
     address: string;
 }
@@ -49,6 +56,7 @@ const MoveInPage = () => {
             first_name: values.first_name,
             last_name: values.last_name,
             member_record_number: values.member_record_number ?? '',
+            gender: values.gender,
             birthday: values.birthday.format('YYYY-MM-DD'),
             address: values.address
         });
@@ -81,6 +89,10 @@ const MoveInPage = () => {
 
                 <Form.Item name="member_record_number" label="Member Record Number (optional)">
                     <Input placeholder="XXX-XXXX-XXXX" inputMode="numeric" />
+                </Form.Item>
+
+                <Form.Item name="gender" label="Gender" rules={[{ required: true, message: 'Please select a gender' }]}>
+                    <Select options={GENDER_OPTIONS} placeholder="Select a gender" />
                 </Form.Item>
 
                 <Form.Item

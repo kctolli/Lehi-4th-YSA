@@ -2,9 +2,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 
-const { get, del } = vi.hoisted(() => ({ get: vi.fn(), del: vi.fn() }));
+const { get, del, put } = vi.hoisted(() => ({ get: vi.fn(), del: vi.fn(), put: vi.fn() }));
 
-vi.mock('axios', () => ({ default: { get, delete: del } }));
+vi.mock('axios', () => ({ default: { get, delete: del, put } }));
 
 import { renderWithProviders, screen, waitFor, within } from '@/test/render';
 import MoveInPage from './page';
@@ -15,8 +15,11 @@ const rows = [
         first_name: 'Amy',
         last_name: 'Ng',
         member_record_number: null,
+        gender: 'Female',
         birthday: '1990-01-01',
         address: '1 A St',
+        moved_in: false,
+        moved_in_at: null,
         created_at: '2026-09-06T00:00:00.000Z'
     },
     {
@@ -24,8 +27,11 @@ const rows = [
         first_name: 'Bob',
         last_name: 'Lee',
         member_record_number: '111-2222-3333',
+        gender: 'Male',
         birthday: '1988-05-05',
         address: '2 B St',
+        moved_in: true,
+        moved_in_at: '2026-09-05T00:00:00.000Z',
         created_at: '2026-09-05T00:00:00.000Z'
     }
 ];
@@ -33,8 +39,10 @@ const rows = [
 beforeEach(() => {
     get.mockReset();
     del.mockReset();
+    put.mockReset();
     get.mockResolvedValue({ data: rows });
     del.mockResolvedValue({ data: { ok: true } });
+    put.mockResolvedValue({ data: rows[0] });
 });
 
 afterEach(() => {
@@ -52,6 +60,8 @@ describe('<MoveInPage /> (bishopric table)', () => {
         // Formatted birthday and the "no member record number" placeholder.
         expect(screen.getByText('Jan 1, 1990')).toBeInTheDocument();
         expect(screen.getByText('111-2222-3333')).toBeInTheDocument();
+        expect(screen.getByText('Female')).toBeInTheDocument();
+        expect(screen.getByText('Male')).toBeInTheDocument();
         const amyRow = screen.getByText('Amy Ng').closest('tr')!;
         expect(within(amyRow).getByText('—')).toBeInTheDocument();
     });
@@ -85,6 +95,16 @@ describe('<MoveInPage /> (bishopric table)', () => {
         await user.click(within(dialog).getByRole('button', { name: 'Delete' }));
 
         await waitFor(() => expect(del).toHaveBeenCalledWith('/api/bishopric/move-ins/2'));
+    });
+
+    it('toggles moved-in status', async () => {
+        const user = userEvent.setup();
+        renderWithProviders(<MoveInPage />);
+
+        const amyRow = (await screen.findByText('Amy Ng')).closest('tr')!;
+        await user.click(within(amyRow).getByRole('switch'));
+
+        await waitFor(() => expect(put).toHaveBeenCalledWith('/api/bishopric/move-ins/2', { moved_in: true }));
     });
 
     it('does not delete when the confirmation dialog is cancelled', async () => {

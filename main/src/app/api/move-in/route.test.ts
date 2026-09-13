@@ -14,6 +14,7 @@ const validBody = {
     first_name: 'Jane',
     last_name: 'Doe',
     member_record_number: '123-4567-8901',
+    gender: 'Female',
     birthday: '1995-06-15',
     address: '123 Main St'
 };
@@ -23,8 +24,11 @@ const insertedRow = {
     first_name: 'Jane',
     last_name: 'Doe',
     member_record_number: '123-4567-8901',
+    gender: 'Female',
     birthday: '1995-06-15',
     address: '123 Main St',
+    moved_in: false,
+    moved_in_at: null,
     created_at: '2026-09-06T00:00:00.000Z'
 };
 
@@ -55,18 +59,20 @@ describe('POST /api/move-in', () => {
                 first_name: '  Jane  ',
                 last_name: '  Doe  ',
                 member_record_number: '   ',
+                gender: 'Female',
                 birthday: ' 1995-06-15 ',
                 address: '  123 Main St  '
             })
         );
 
         const values = sql.mock.calls[0].slice(1);
-        expect(values).toEqual(['Jane', 'Doe', null, '1995-06-15', '123 Main St']);
+        expect(values).toEqual(['Jane', 'Doe', null, 'Female', '1995-06-15', '123 Main St']);
     });
 
     it.each([
         ['first_name', { ...validBody, first_name: '   ' }],
         ['last_name', { ...validBody, last_name: '' }],
+        ['gender', { ...validBody, gender: '' }],
         ['birthday', { ...validBody, birthday: '' }],
         ['address', { ...validBody, address: '   ' }]
     ])('returns 400 when %s is missing', async (_field, body) => {
@@ -74,8 +80,16 @@ describe('POST /api/move-in', () => {
 
         expect(response.status).toBe(400);
         await expect(response.json()).resolves.toEqual({
-            error: 'first_name, last_name, birthday, and address are required'
+            error: 'first_name, last_name, gender, birthday, and address are required'
         });
+        expect(sql).not.toHaveBeenCalled();
+    });
+
+    it('returns 400 when gender is not Male or Female', async () => {
+        const response = await POST(requestWith({ ...validBody, gender: 'Other' }));
+
+        expect(response.status).toBe(400);
+        await expect(response.json()).resolves.toEqual({ error: 'gender must be Male or Female' });
         expect(sql).not.toHaveBeenCalled();
     });
 

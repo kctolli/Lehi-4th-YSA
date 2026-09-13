@@ -3,6 +3,7 @@ import { sql } from '@/lib/db';
 
 const MIN_AGE = 25;
 const MAX_AGE = 36;
+const GENDERS = ['Male', 'Female'];
 
 const ageInYears = (isoDate: string): number => {
     const birthday = new Date(`${isoDate}T00:00:00`);
@@ -16,16 +17,21 @@ const ageInYears = (isoDate: string): number => {
 };
 
 export async function POST(request: NextRequest) {
-    const { first_name, last_name, member_record_number, birthday, address } = await request.json();
+    const { first_name, last_name, member_record_number, gender, birthday, address } = await request.json();
 
     const firstName = typeof first_name === 'string' ? first_name.trim() : '';
     const lastName = typeof last_name === 'string' ? last_name.trim() : '';
     const memberRecordNumber = typeof member_record_number === 'string' ? member_record_number.trim() : '';
+    const genderValue = typeof gender === 'string' ? gender.trim() : '';
     const birthdayValue = typeof birthday === 'string' ? birthday.trim() : '';
     const addressValue = typeof address === 'string' ? address.trim() : '';
 
-    if (!firstName || !lastName || !birthdayValue || !addressValue) {
-        return NextResponse.json({ error: 'first_name, last_name, birthday, and address are required' }, { status: 400 });
+    if (!firstName || !lastName || !genderValue || !birthdayValue || !addressValue) {
+        return NextResponse.json({ error: 'first_name, last_name, gender, birthday, and address are required' }, { status: 400 });
+    }
+
+    if (!GENDERS.includes(genderValue)) {
+        return NextResponse.json({ error: 'gender must be Male or Female' }, { status: 400 });
     }
 
     if (!/^\d{4}-\d{2}-\d{2}$/.test(birthdayValue)) {
@@ -38,9 +44,9 @@ export async function POST(request: NextRequest) {
     }
 
     const [row] = await sql`
-        INSERT INTO move_ins (first_name, last_name, member_record_number, birthday, address)
-        VALUES (${firstName}, ${lastName}, ${memberRecordNumber || null}, ${birthdayValue}, ${addressValue})
-        RETURNING id, first_name, last_name, member_record_number, birthday, address, created_at
+        INSERT INTO move_ins (first_name, last_name, member_record_number, gender, birthday, address)
+        VALUES (${firstName}, ${lastName}, ${memberRecordNumber || null}, ${genderValue}, ${birthdayValue}, ${addressValue})
+        RETURNING id, first_name, last_name, member_record_number, gender, birthday, address, moved_in, moved_in_at, created_at
     `;
 
     return NextResponse.json(row, { status: 201 });
