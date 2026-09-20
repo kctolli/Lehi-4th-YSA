@@ -12,6 +12,8 @@ export const metadata: Metadata = {
     }
 };
 
-const BishopricLayout = ({ children }: { children: ReactNode }) => <BishopricLayoutClient>{children}</BishopricLayoutClient>;
+const BishopricLayout = 
+    ({ children }: { children: ReactNode }) => 
+    <BishopricLayoutClient>{children}</BishopricLayoutClient>;
 
 export default BishopricLayout;
