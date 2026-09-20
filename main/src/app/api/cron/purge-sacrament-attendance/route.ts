@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
 
     const removed = await sql`
         DELETE FROM sacrament_attendance
-        WHERE attendance_date < now() - interval '3 months'
+        WHERE attendance_date < now() - interval '6 months'
         RETURNING id, count, attendance_date
     `;
 

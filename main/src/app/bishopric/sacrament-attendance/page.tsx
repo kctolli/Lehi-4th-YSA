@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { App, Button, DatePicker, Table } from 'antd';
+import { App, Button, DatePicker, InputNumber, Space, Table } from 'antd';
 import { format, parseISO } from 'date-fns';
 import dayjs from 'dayjs';
 import axios from 'axios';
@@ -21,6 +21,7 @@ const SacramentAttendancePage = () => {
     const { message, modal } = App.useApp();
     const queryClient = useQueryClient();
     const [count, setCount] = useState(0);
+    const [manualAmount, setManualAmount] = useState<number | null>(null);
     const [date, setDate] = useState<dayjs.Dayjs>(dayjs(getTodayInAppTimeZone()));
 
     const { data: history, isLoading } = useQuery({
@@ -65,8 +66,13 @@ const SacramentAttendancePage = () => {
         });
     };
 
-    const decrement = () => setCount((value) => Math.max(0, value - 1));
-    const increment = () => setCount((value) => value + 1);
+    const adjust = (delta: number) => setCount((value) => Math.max(0, value + delta));
+
+    const addManual = () => {
+        if (!manualAmount) return;
+        adjust(manualAmount);
+        setManualAmount(null);
+    };
 
     return (
         <section className="flex flex-col gap-6">
@@ -75,22 +81,64 @@ const SacramentAttendancePage = () => {
             <div className="mx-auto flex w-full max-w-sm flex-col items-center gap-6 rounded-xl border border-gray-200 p-6 shadow-sm">
                 <DatePicker className="w-full" inputReadOnly allowClear={false} value={date} onChange={(value) => value && setDate(value)} />
 
-                <div className="select-none text-6xl font-bold tabular-nums">{count}</div>
+                <InputNumber
+                    aria-label="Attendance count"
+                    className="w-full [&_input]:text-center [&_input]:text-5xl [&_input]:font-bold [&_input]:tabular-nums"
+                    size="large"
+                    min={0}
+                    precision={0}
+                    controls={false}
+                    inputMode="numeric"
+                    value={count}
+                    onChange={(value) => setCount(typeof value === 'number' ? value : 0)}
+                    onFocus={(event) => event.target.select()}
+                />
 
                 <div className="flex w-full items-center justify-center gap-4">
                     <button
                         type="button"
+                        aria-label="Subtract five"
+                        onClick={() => adjust(-5)}
+                        className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-gray-300 text-xl font-bold text-gray-700 transition active:scale-95 active:bg-gray-100 disabled:opacity-40"
+                        disabled={count === 0}
+                    >
+                        −5
+                    </button>
+                    <button
+                        type="button"
                         aria-label="Subtract one"
-                        onClick={decrement}
+                        onClick={() => adjust(-1)}
                         className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-gray-300 text-4xl font-bold text-gray-700 transition active:scale-95 active:bg-gray-100 disabled:opacity-40"
                         disabled={count === 0}
                     >
                         −
                     </button>
-                    <button type="button" aria-label="Add one" onClick={increment} className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-blue-500 bg-blue-500 text-4xl font-bold text-white transition active:scale-95 active:bg-blue-600">
+                    <button type="button" aria-label="Add one" onClick={() => adjust(1)} className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-blue-500 bg-blue-500 text-4xl font-bold text-white transition active:scale-95 active:bg-blue-600">
                         +
                     </button>
+                    <button type="button" aria-label="Add five" onClick={() => adjust(5)} className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-blue-500 text-xl font-bold text-blue-600 transition active:scale-95 active:bg-blue-50">
+                        +5
+                    </button>
                 </div>
+
+                <Space.Compact className="w-full">
+                    <InputNumber
+                        aria-label="Amount to add"
+                        className="!w-full"
+                        size="large"
+                        min={1}
+                        precision={0}
+                        controls={false}
+                        inputMode="numeric"
+                        placeholder="Enter a number to add"
+                        value={manualAmount}
+                        onChange={setManualAmount}
+                        onPressEnter={addManual}
+                    />
+                    <Button size="large" onClick={addManual} disabled={!manualAmount}>
+                        Add
+                    </Button>
+                </Space.Compact>
 
                 <div className="flex w-full gap-2">
                     <Button size="large" className="flex-1" onClick={() => setCount(0)} disabled={count === 0}>
