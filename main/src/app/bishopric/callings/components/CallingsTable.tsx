@@ -49,10 +49,10 @@ const CallingsTable = ({ data, loading, onEdit, onDelete, onToggleApproved, onTo
                     fixed: 'left',
                     render: (value: string, record: Calling) => (
                         <div className="flex items-center gap-2">
-                            <button type="button" className="text-blue-600 hover:underline text-left" onClick={() => onEdit(record)}>
+                            <button type="button" className="text-left text-blue-600 hover:underline" onClick={() => onEdit(record)}>
                                 {value}
                             </button>
-                            <button type="button" aria-label={`Delete calling for ${value}`} className="text-red-500 hover:text-red-700 leading-none" onClick={() => onDelete(record)}>
+                            <button type="button" aria-label={`Delete calling for ${value}`} className="-m-2 flex h-10 w-10 items-center justify-center text-xl leading-none text-red-500 hover:text-red-700" onClick={() => onDelete(record)}>
                                 ×
                             </button>
                         </div>

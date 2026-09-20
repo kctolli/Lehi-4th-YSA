@@ -97,15 +97,6 @@ const SacramentAttendancePage = () => {
                 <div className="flex w-full items-center justify-center gap-4">
                     <button
                         type="button"
-                        aria-label="Subtract five"
-                        onClick={() => adjust(-5)}
-                        className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-gray-300 text-xl font-bold text-gray-700 transition active:scale-95 active:bg-gray-100 disabled:opacity-40"
-                        disabled={count === 0}
-                    >
-                        −5
-                    </button>
-                    <button
-                        type="button"
                         aria-label="Subtract one"
                         onClick={() => adjust(-1)}
                         className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-gray-300 text-4xl font-bold text-gray-700 transition active:scale-95 active:bg-gray-100 disabled:opacity-40"
@@ -115,9 +106,6 @@ const SacramentAttendancePage = () => {
                     </button>
                     <button type="button" aria-label="Add one" onClick={() => adjust(1)} className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-blue-500 bg-blue-500 text-4xl font-bold text-white transition active:scale-95 active:bg-blue-600">
                         +
-                    </button>
-                    <button type="button" aria-label="Add five" onClick={() => adjust(5)} className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-blue-500 text-xl font-bold text-blue-600 transition active:scale-95 active:bg-blue-50">
-                        +5
                     </button>
                 </div>
 
@@ -165,7 +153,7 @@ const SacramentAttendancePage = () => {
                             title: '',
                             key: 'actions',
                             render: (_, record: AttendanceRecord) => (
-                                <button type="button" aria-label="Delete entry" className="leading-none text-red-500 hover:text-red-700" onClick={() => handleDelete(record)}>
+                                <button type="button" aria-label="Delete entry" className="-m-2 flex h-10 w-10 items-center justify-center text-xl leading-none text-red-500 hover:text-red-700" onClick={() => handleDelete(record)}>
                                     ×
                                 </button>
                             )

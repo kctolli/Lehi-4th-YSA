@@ -43,3 +43,14 @@
 .callings-table .ant-table-thead > tr > th {
     @apply !text-xs whitespace-nowrap;
 }
+
+/* iOS Safari zooms the page when a focused field is under 16px; keep inputs at 16px on phones. Global (not scoped) because modals render in a body portal. */
+@media (max-width: 639px) {
+    .ant-input,
+    .ant-input-affix-wrapper input,
+    .ant-input-number-input,
+    .ant-picker-input > input,
+    .ant-select-selection-search-input {
+        font-size: 16px !important;
+    }
+}

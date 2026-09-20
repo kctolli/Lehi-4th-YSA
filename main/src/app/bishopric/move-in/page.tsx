@@ -76,6 +76,7 @@ const MoveInPage = () => {
                     {
                         title: 'Name',
                         key: 'name',
+                        fixed: 'left',
                         render: (_, record: MoveIn) => `${record.first_name} ${record.last_name}`
                     },
                     { title: 'Member Record Number', dataIndex: 'member_record_number', render: (value: string | null) => value || '—' },
@@ -96,8 +97,9 @@ const MoveInPage = () => {
                     {
                         title: '',
                         key: 'actions',
+                        fixed: 'right',
                         render: (_, record: MoveIn) => (
-                            <button type="button" aria-label="Delete entry" className="leading-none text-red-500 hover:text-red-700" onClick={() => handleDelete(record)}>
+                            <button type="button" aria-label="Delete entry" className="-m-2 flex h-10 w-10 items-center justify-center text-xl leading-none text-red-500 hover:text-red-700" onClick={() => handleDelete(record)}>
                                 ×
                             </button>
                         )

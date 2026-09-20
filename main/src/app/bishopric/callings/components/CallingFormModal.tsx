@@ -44,7 +44,7 @@ const CallingFormModal = ({ open, editingCalling, confirmLoading, existingNames,
     };
 
     return (
-        <Modal title={editingCalling ? 'Edit Calling' : 'New Calling'} open={open} onCancel={onCancel} onOk={handleOk} confirmLoading={confirmLoading} destroyOnClose width={640}>
+        <Modal title={editingCalling ? 'Edit Calling' : 'New Calling'} open={open} onCancel={onCancel} onOk={handleOk} confirmLoading={confirmLoading} destroyOnClose centered width={640}>
             <Form form={form} layout="vertical">
                 <Form.Item
                     name="person_name"

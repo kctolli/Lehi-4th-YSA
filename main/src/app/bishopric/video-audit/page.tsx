@@ -114,7 +114,7 @@ const VideoAuditPage = () => {
         <section className="flex flex-col gap-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <h1 className="text-2xl font-semibold">Video Audit Tracker</h1>
-                <Button type="primary" onClick={openCreateModal} className="w-full sm:w-auto">
+                <Button size="large" type="primary" onClick={openCreateModal} className="w-full sm:w-auto">
                     New Entry
                 </Button>
             </div>
@@ -128,12 +128,13 @@ const VideoAuditPage = () => {
                     {
                         title: 'Name',
                         dataIndex: 'name',
+                        fixed: 'left',
                         render: (value: string, record: VideoAudit) => (
                             <div className="flex items-center gap-2">
-                                <button type="button" className="text-blue-600 hover:underline text-left" onClick={() => openEditModal(record)}>
+                                <button type="button" className="text-left text-blue-600 hover:underline" onClick={() => openEditModal(record)}>
                                     {value}
                                 </button>
-                                <button type="button" aria-label={`Delete tracker entry for ${value}`} className="text-red-500 hover:text-red-700 leading-none" onClick={() => handleDelete(record)}>
+                                <button type="button" aria-label={`Delete tracker entry for ${value}`} className="-m-2 flex h-10 w-10 items-center justify-center text-xl leading-none text-red-500 hover:text-red-700" onClick={() => handleDelete(record)}>
                                     ×
                                 </button>
                             </div>
@@ -148,7 +149,7 @@ const VideoAuditPage = () => {
                 ]}
             />
 
-            <Modal title={editingId ? 'Edit Entry' : 'New Entry'} open={isModalOpen} onCancel={() => setIsModalOpen(false)} onOk={handleSubmit} confirmLoading={saveMutation.isPending} destroyOnClose>
+            <Modal title={editingId ? 'Edit Entry' : 'New Entry'} open={isModalOpen} onCancel={() => setIsModalOpen(false)} onOk={handleSubmit} confirmLoading={saveMutation.isPending} destroyOnClose centered>
                 <Form form={form} layout="vertical">
                     <Form.Item name="name" label="Name" rules={[{ required: true }]}>
                         <Input />
@@ -157,7 +158,7 @@ const VideoAuditPage = () => {
                         <Input />
                     </Form.Item>
                     <Form.Item name="date_watched" label="Date Watched">
-                        <DatePicker className="w-full" />
+                        <DatePicker className="w-full" inputReadOnly />
                     </Form.Item>
                 </Form>
             </Modal>

@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { App, Button, Input } from 'antd';
 import axios from 'axios';
 import { getTodayInAppTimeZone } from '@/utils/timezone';
+import CallingCards from './components/CallingCards';
 import CallingFormModal from './components/CallingFormModal';
 import CallingsTable from './components/CallingsTable';
 import { Calling, CallingFormValues } from './types';
@@ -140,31 +141,38 @@ const CallingsPage = () => {
         });
     };
 
+    const rowProps = {
+        data: filteredCallings,
+        loading: isLoading,
+        onEdit: openEditModal,
+        onDelete: handleDelete,
+        onToggleApproved: (calling: Calling, approved: boolean) => toggleApprovedMutation.mutate({ calling, approved }),
+        onToggleInLcr: (calling: Calling, in_lcr: boolean) => toggleInLcrMutation.mutate({ calling, in_lcr }),
+        onToggleDate: (calling: Calling, field: 'date_scheduled' | 'date_extended' | 'date_sustained' | 'date_set_apart', checked: boolean) => toggleDateMutation.mutate({ calling, field, checked })
+    };
+
     return (
         <section className="relative left-1/2 right-1/2 -mx-[50vw] flex w-screen flex-col gap-4 px-4 lg:px-8">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <h1 className="text-2xl font-semibold">Callings</h1>
                 <div className="flex flex-col gap-2 sm:flex-row">
-                    <Button onClick={handleCleanup} loading={cleanupMutation.isPending} className="w-full sm:w-auto">
+                    <Button size="large" onClick={handleCleanup} loading={cleanupMutation.isPending} className="w-full sm:w-auto">
                         Clean up
                     </Button>
-                    <Button type="primary" onClick={openCreateModal} className="w-full sm:w-auto">
+                    <Button size="large" type="primary" onClick={openCreateModal} className="w-full sm:w-auto">
                         New Calling
                     </Button>
                 </div>
             </div>
 
-            <Input.Search allowClear placeholder="Search by name or calling" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} className="w-full sm:max-w-sm" />
+            <Input.Search size="large" allowClear placeholder="Search by name or calling" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} className="w-full sm:max-w-sm" />
 
-            <CallingsTable
-                data={filteredCallings}
-                loading={isLoading}
-                onEdit={openEditModal}
-                onDelete={handleDelete}
-                onToggleApproved={(calling, approved) => toggleApprovedMutation.mutate({ calling, approved })}
-                onToggleInLcr={(calling, in_lcr) => toggleInLcrMutation.mutate({ calling, in_lcr })}
-                onToggleDate={(calling, field, checked) => toggleDateMutation.mutate({ calling, field, checked })}
-            />
+            <div className="md:hidden">
+                <CallingCards {...rowProps} />
+            </div>
+            <div className="hidden md:block">
+                <CallingsTable {...rowProps} />
+            </div>
 
             <CallingFormModal open={isModalOpen} editingCalling={editingCalling} confirmLoading={saveMutation.isPending} existingNames={existingNames} onCancel={() => setIsModalOpen(false)} onSubmit={(values) => saveMutation.mutate(values)} />
         </section>
