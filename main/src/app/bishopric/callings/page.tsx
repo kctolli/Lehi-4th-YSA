@@ -81,7 +81,19 @@ const CallingsPage = () => {
         onError: () => message.error('Failed to delete calling')
     });
 
-    const toggleApprovedMutation = useMutation({
+    const cleanupMutation = useMutation({
+        mutationFn: async () => {
+            const { data } = await axios.post<{ removedCount: number }>('/api/bishopric/callings/cleanup');
+            return data;
+        },
+        onSuccess: ({ removedCount }) => {
+            message.success(removedCount === 0 ? 'Nothing to clean up' : `Removed ${removedCount} calling${removedCount === 1 ? '' : 's'}`);
+            invalidate();
+        },
+        onError: () => message.error('Failed to clean up')
+    });
+
+    const toggleApprovedMutation =useMutation({
         mutationFn: ({ calling, approved }: { calling: Calling; approved: boolean }) => axios.put(`/api/bishopric/callings/${calling.id}`, { ...calling, approved }),
         onSuccess: invalidate,
         onError: () => message.error('Failed to update')
@@ -118,13 +130,28 @@ const CallingsPage = () => {
         });
     };
 
+    const handleCleanup = () => {
+        modal.confirm({
+            title: 'Clean up callings?',
+            content: 'Permanently removes callings that were set apart and entered in LCR more than 7 days ago.',
+            okType: 'danger',
+            okText: 'Clean up',
+            onOk: () => cleanupMutation.mutateAsync()
+        });
+    };
+
     return (
         <section className="relative left-1/2 right-1/2 -mx-[50vw] flex w-screen flex-col gap-4 px-4 lg:px-8">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <h1 className="text-2xl font-semibold">Callings</h1>
-                <Button type="primary" onClick={openCreateModal} className="w-full sm:w-auto">
-                    New Calling
-                </Button>
+                <div className="flex flex-col gap-2 sm:flex-row">
+                    <Button onClick={handleCleanup} loading={cleanupMutation.isPending} className="w-full sm:w-auto">
+                        Clean up
+                    </Button>
+                    <Button type="primary" onClick={openCreateModal} className="w-full sm:w-auto">
+                        New Calling
+                    </Button>
+                </div>
             </div>
 
             <Input.Search allowClear placeholder="Search by name or calling" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} className="w-full sm:max-w-sm" />

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sql } from '@/lib/db';
+import { purgeLcrCallings } from '@/lib/purgeLcr';
 
 export async function GET(request: NextRequest) {
     const cronSecret = process.env.CRON_SECRET;
@@ -9,14 +9,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const removed = await sql`
-        DELETE FROM callings
-        WHERE in_lcr = true
-          AND in_lcr_at IS NOT NULL
-          AND in_lcr_at < now() - interval '14 days'
-          AND date_set_apart IS NOT NULL
-        RETURNING id, person_name, calling_name, in_lcr_at, date_set_apart
-    `;
+    const removed = await purgeLcrCallings();
 
     return NextResponse.json({ removedCount: removed.length, removed });
 }
