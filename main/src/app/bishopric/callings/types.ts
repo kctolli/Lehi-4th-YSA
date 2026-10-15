@@ -37,7 +37,7 @@ export const DATE_FIELDS: { key: keyof Pick<CallingFormValues, 'date_scheduled' 
     { key: 'date_sustained', label: 'Sustained' },
     { key: 'date_set_apart', label: 'Set Apart' },
     { key: 'date_released', label: 'Released' },
-    { key: 'date_rejected', label: 'Rejected' }
+    { key: 'date_rejected', label: 'Cancelled' }
 ];
 
 export const STATUSES: { value: string; label: string; color: string }[] = [
@@ -49,7 +49,7 @@ export const STATUSES: { value: string; label: string; color: string }[] = [
     { value: 'set_apart', label: 'Set Apart', color: 'green' },
     { value: 'in_lcr', label: 'In LCR', color: 'purple' },
     { value: 'released', label: 'Released', color: 'default' },
-    { value: 'rejected', label: 'Rejected', color: 'red' }
+    { value: 'rejected', label: 'Cancelled', color: 'red' }
 ];
 
 export const STATUS_BY_VALUE = new Map(STATUSES.map((status, index) => [status.value, { ...status, rank: index }]));
