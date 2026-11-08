@@ -4,7 +4,7 @@ const { sql } = vi.hoisted(() => ({ sql: vi.fn() }));
 
 vi.mock('@/lib/db', () => ({ sql }));
 
-import { GET } from './route';
+import { DELETE, GET } from './route';
 
 const rows = [
     { id: 2, first_name: 'Amy', last_name: 'Ng', member_record_number: null, birthday: '1990-01-01', address: '1 A St', created_at: '2026-09-06T00:00:00.000Z' },
@@ -32,5 +32,18 @@ describe('GET /api/bishopric/move-ins', () => {
 
         expect(response.status).toBe(200);
         await expect(response.json()).resolves.toEqual([]);
+    });
+});
+
+describe('DELETE /api/bishopric/move-ins', () => {
+    it('deletes only moved-in rows and reports how many were removed', async () => {
+        sql.mockResolvedValue([{ id: 1 }, { id: 3 }]);
+
+        const response = await DELETE();
+
+        expect(response.status).toBe(200);
+        await expect(response.json()).resolves.toEqual({ removedCount: 2 });
+        expect(sql).toHaveBeenCalledTimes(1);
+        expect(sql.mock.calls[0][0].join('')).toContain('WHERE moved_in = true');
     });
 });

@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { differenceInYears, format, parseISO } from 'date-fns';
-import { App, Switch, Table } from 'antd';
+import { App, Button, Switch, Table } from 'antd';
 import axios from 'axios';
 
 interface MoveIn {
@@ -13,6 +13,7 @@ interface MoveIn {
     gender: string;
     birthday: string;
     address: string;
+    phone_number: string | null;
     moved_in: boolean;
     moved_in_at: string | null;
     created_at: string;
@@ -47,6 +48,15 @@ const MoveInPage = () => {
         onError: () => message.error('Failed to delete entry')
     });
 
+    const flushMutation = useMutation({
+        mutationFn: () => axios.delete('/api/bishopric/move-ins'),
+        onSuccess: () => {
+            message.success('Flushed moved-in entries');
+            invalidate();
+        },
+        onError: () => message.error('Failed to flush entries')
+    });
+
     const toggleMovedInMutation = useMutation({
         mutationFn: ({ id, moved_in }: { id: number; moved_in: boolean }) => axios.put(`/api/bishopric/move-ins/${id}`, { moved_in }),
         onSuccess: invalidate,
@@ -62,9 +72,26 @@ const MoveInPage = () => {
         });
     };
 
+    const movedInCount = moveIns?.filter((record) => record.moved_in).length ?? 0;
+
+    const handleFlush = () => {
+        modal.confirm({
+            title: `Delete all ${movedInCount} moved-in ${movedInCount === 1 ? 'entry' : 'entries'}?`,
+            content: 'This permanently removes every entry marked as moved in.',
+            okType: 'danger',
+            okText: 'Flush',
+            onOk: () => flushMutation.mutate()
+        });
+    };
+
     return (
         <section className="flex flex-col gap-6">
-            <h1 className="text-2xl font-semibold">Move-Ins</h1>
+            <div className="flex items-center justify-between gap-4">
+                <h1 className="text-2xl font-semibold">Move-Ins</h1>
+                <Button danger disabled={movedInCount === 0} loading={flushMutation.isPending} onClick={handleFlush}>
+                    Flush Moved In
+                </Button>
+            </div>
 
             <Table
                 rowKey="id"
@@ -88,6 +115,7 @@ const MoveInPage = () => {
                         render: (_, record: MoveIn) => calculateAge(record.birthday) ?? '—'
                     },
                     { title: 'Address', dataIndex: 'address', render: (value: string) => <span className="block max-w-[16rem] whitespace-pre-wrap">{value}</span> },
+                    { title: 'Phone Number', dataIndex: 'phone_number', render: (value: string | null) => value || '—' },
                     { title: 'Submitted', dataIndex: 'created_at', render: formatDate },
                     {
                         title: 'Moved In',

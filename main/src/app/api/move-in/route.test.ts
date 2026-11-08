@@ -16,7 +16,8 @@ const validBody = {
     member_record_number: '123-4567-8901',
     gender: 'Female',
     birthday: '1995-06-15',
-    address: '123 Main St'
+    address: '123 Main St',
+    phone_number: '801-555-0100'
 };
 
 const insertedRow = {
@@ -27,6 +28,7 @@ const insertedRow = {
     gender: 'Female',
     birthday: '1995-06-15',
     address: '123 Main St',
+    phone_number: '801-555-0100',
     moved_in: false,
     moved_in_at: null,
     created_at: '2026-09-06T00:00:00.000Z'
@@ -61,12 +63,21 @@ describe('POST /api/move-in', () => {
                 member_record_number: '   ',
                 gender: 'Female',
                 birthday: ' 1995-06-15 ',
-                address: '  123 Main St  '
+                address: '  123 Main St  ',
+                phone_number: '  801-555-0100  '
             })
         );
 
         const values = sql.mock.calls[0].slice(1);
-        expect(values).toEqual(['Jane', 'Doe', null, 'Female', '1995-06-15', '123 Main St']);
+        expect(values).toEqual(['Jane', 'Doe', null, 'Female', '1995-06-15', '123 Main St', '801-555-0100']);
+    });
+
+    it.each(['555-0100', 'call me please', '1234567890123456'])('returns 400 when phone number "%s" is invalid', async (phone_number) => {
+        const response = await POST(requestWith({ ...validBody, phone_number }));
+
+        expect(response.status).toBe(400);
+        await expect(response.json()).resolves.toEqual({ error: 'Please enter a valid phone number' });
+        expect(sql).not.toHaveBeenCalled();
     });
 
     it.each([
@@ -74,13 +85,14 @@ describe('POST /api/move-in', () => {
         ['last_name', { ...validBody, last_name: '' }],
         ['gender', { ...validBody, gender: '' }],
         ['birthday', { ...validBody, birthday: '' }],
-        ['address', { ...validBody, address: '   ' }]
+        ['address', { ...validBody, address: '   ' }],
+        ['phone_number', { ...validBody, phone_number: '   ' }]
     ])('returns 400 when %s is missing', async (_field, body) => {
         const response = await POST(requestWith(body));
 
         expect(response.status).toBe(400);
         await expect(response.json()).resolves.toEqual({
-            error: 'first_name, last_name, gender, birthday, and address are required'
+            error: 'first_name, last_name, gender, birthday, address, and phone_number are required'
         });
         expect(sql).not.toHaveBeenCalled();
     });

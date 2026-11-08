@@ -48,6 +48,7 @@ const fillValidForm = async (user: ReturnType<typeof userEvent.setup>, birthday 
     await user.clear(screen.getByTestId('birthday-input'));
     await user.type(screen.getByTestId('birthday-input'), birthday);
     await user.type(screen.getByLabelText('Address'), '123 Main St');
+    await user.type(screen.getByLabelText('Phone Number'), '801-555-0100');
 };
 
 beforeEach(() => {
@@ -65,6 +66,7 @@ describe('<MoveInPage /> (public form)', () => {
         expect(screen.getByLabelText(/Member Record Number/)).toBeInTheDocument();
         expect(screen.getByLabelText('Gender')).toBeInTheDocument();
         expect(screen.getByLabelText('Address')).toBeInTheDocument();
+        expect(screen.getByLabelText('Phone Number')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Submit' })).toBeInTheDocument();
     });
 
@@ -79,6 +81,18 @@ describe('<MoveInPage /> (public form)', () => {
         expect(screen.getByText('Please select a gender')).toBeInTheDocument();
         expect(screen.getByText('Birthday is required')).toBeInTheDocument();
         expect(screen.getByText('Address is required')).toBeInTheDocument();
+        expect(screen.getByText('Phone number is required')).toBeInTheDocument();
+        expect(post).not.toHaveBeenCalled();
+    });
+
+    it('rejects an invalid phone number', async () => {
+        const user = userEvent.setup();
+        renderWithProviders(<MoveInPage />);
+
+        await user.type(screen.getByLabelText('Phone Number'), '555-0100');
+        await user.click(screen.getByRole('button', { name: 'Submit' }));
+
+        expect(await screen.findByText('Please enter a valid phone number')).toBeInTheDocument();
         expect(post).not.toHaveBeenCalled();
     });
 
@@ -107,7 +121,8 @@ describe('<MoveInPage /> (public form)', () => {
                 member_record_number: '123-4567-8901',
                 gender: 'Female',
                 birthday: inRangeBirthday,
-                address: '123 Main St'
+                address: '123 Main St',
+                phone_number: '801-555-0100'
             })
         );
 
@@ -129,6 +144,7 @@ describe('<MoveInPage /> (public form)', () => {
         await user.click(await screen.findByTitle('Female'));
         await user.type(screen.getByTestId('birthday-input'), inRangeBirthday);
         await user.type(screen.getByLabelText('Address'), '123 Main St');
+        await user.type(screen.getByLabelText('Phone Number'), '801-555-0100');
         await user.click(screen.getByRole('button', { name: 'Submit' }));
 
         await waitFor(() =>

@@ -16,8 +16,10 @@ const ageInYears = (isoDate: string): number => {
     return age;
 };
 
+const isValidPhoneNumber = (value: string): boolean => /^[\d\s()+.-]+$/.test(value) && value.replace(/\D/g, '').length >= 10 && value.replace(/\D/g, '').length <= 15;
+
 export async function POST(request: NextRequest) {
-    const { first_name, last_name, member_record_number, gender, birthday, address } = await request.json();
+    const { first_name, last_name, member_record_number, gender, birthday, address, phone_number } = await request.json();
 
     const firstName = typeof first_name === 'string' ? first_name.trim() : '';
     const lastName = typeof last_name === 'string' ? last_name.trim() : '';
@@ -25,9 +27,14 @@ export async function POST(request: NextRequest) {
     const genderValue = typeof gender === 'string' ? gender.trim() : '';
     const birthdayValue = typeof birthday === 'string' ? birthday.trim() : '';
     const addressValue = typeof address === 'string' ? address.trim() : '';
+    const phoneNumber = typeof phone_number === 'string' ? phone_number.trim() : '';
 
-    if (!firstName || !lastName || !genderValue || !birthdayValue || !addressValue) {
-        return NextResponse.json({ error: 'first_name, last_name, gender, birthday, and address are required' }, { status: 400 });
+    if (!firstName || !lastName || !genderValue || !birthdayValue || !addressValue || !phoneNumber) {
+        return NextResponse.json({ error: 'first_name, last_name, gender, birthday, address, and phone_number are required' }, { status: 400 });
+    }
+
+    if (!isValidPhoneNumber(phoneNumber)) {
+        return NextResponse.json({ error: 'Please enter a valid phone number' }, { status: 400 });
     }
 
     if (!GENDERS.includes(genderValue)) {
@@ -44,9 +51,9 @@ export async function POST(request: NextRequest) {
     }
 
     const [row] = await sql`
-        INSERT INTO move_ins (first_name, last_name, member_record_number, gender, birthday, address)
-        VALUES (${firstName}, ${lastName}, ${memberRecordNumber || null}, ${genderValue}, ${birthdayValue}, ${addressValue})
-        RETURNING id, first_name, last_name, member_record_number, gender, birthday, address, moved_in, moved_in_at, created_at
+        INSERT INTO move_ins (first_name, last_name, member_record_number, gender, birthday, address, phone_number)
+        VALUES (${firstName}, ${lastName}, ${memberRecordNumber || null}, ${genderValue}, ${birthdayValue}, ${addressValue}, ${phoneNumber})
+        RETURNING id, first_name, last_name, member_record_number, gender, birthday, address, phone_number, moved_in, moved_in_at, created_at
     `;
 
     return NextResponse.json(row, { status: 201 });

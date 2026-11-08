@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
         DELETE FROM move_ins
         WHERE moved_in = true
           AND moved_in_at IS NOT NULL
-          AND moved_in_at < now() - interval '14 days'
+          AND moved_in_at < now() - interval '30 days'
         RETURNING id, first_name, last_name, moved_in_at
     `;
 

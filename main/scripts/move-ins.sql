@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS move_ins (
     gender TEXT NOT NULL,
     birthday DATE NOT NULL,
     address TEXT NOT NULL,
+    phone_number TEXT,
     moved_in BOOLEAN NOT NULL DEFAULT false,
     moved_in_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -22,3 +23,6 @@ CREATE INDEX IF NOT EXISTS move_ins_created_at_idx ON move_ins (created_at DESC)
 -- ALTER TABLE move_ins ALTER COLUMN gender DROP DEFAULT;
 -- ALTER TABLE move_ins ADD COLUMN IF NOT EXISTS moved_in BOOLEAN NOT NULL DEFAULT false;
 -- ALTER TABLE move_ins ADD COLUMN IF NOT EXISTS moved_in_at TIMESTAMPTZ;
+
+-- If the table already existed before phone numbers were added, run this BEFORE deploying:
+-- ALTER TABLE move_ins ADD COLUMN IF NOT EXISTS phone_number TEXT;

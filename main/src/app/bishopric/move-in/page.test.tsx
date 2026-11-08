@@ -18,6 +18,7 @@ const rows = [
         gender: 'Female',
         birthday: '1990-01-01',
         address: '1 A St',
+        phone_number: '801-555-0100',
         moved_in: false,
         moved_in_at: null,
         created_at: '2026-09-06T00:00:00.000Z'
@@ -30,6 +31,7 @@ const rows = [
         gender: 'Male',
         birthday: '1988-05-05',
         address: '2 B St',
+        phone_number: null,
         moved_in: true,
         moved_in_at: '2026-09-05T00:00:00.000Z',
         created_at: '2026-09-05T00:00:00.000Z'
@@ -64,6 +66,11 @@ describe('<MoveInPage /> (bishopric table)', () => {
         expect(screen.getByText('Male')).toBeInTheDocument();
         const amyRow = screen.getByText('Amy Ng').closest('tr')!;
         expect(within(amyRow).getByText('—')).toBeInTheDocument();
+        expect(within(amyRow).getByText('801-555-0100')).toBeInTheDocument();
+
+        // Entries submitted before phone numbers were collected show a placeholder.
+        const bobRow = screen.getByText('Bob Lee').closest('tr')!;
+        expect(within(bobRow).getByText('—')).toBeInTheDocument();
     });
 
     it('computes the age column from the birthday', async () => {
@@ -121,5 +128,42 @@ describe('<MoveInPage /> (bishopric table)', () => {
         // Give any (unwanted) delete mutation time to fire before asserting it didn't.
         await new Promise((resolve) => setTimeout(resolve, 100));
         expect(del).not.toHaveBeenCalled();
+    });
+
+    it('flushes moved-in entries after the confirmation dialog is accepted', async () => {
+        const user = userEvent.setup();
+        renderWithProviders(<MoveInPage />);
+
+        await screen.findByText('Bob Lee');
+        await user.click(screen.getByRole('button', { name: 'Flush Moved In' }));
+
+        const dialog = await screen.findByRole('dialog');
+        expect(within(dialog).getByText('Delete all 1 moved-in entry?')).toBeInTheDocument();
+        await user.click(within(dialog).getByRole('button', { name: 'Flush' }));
+
+        await waitFor(() => expect(del).toHaveBeenCalledWith('/api/bishopric/move-ins'));
+    });
+
+    it('does not flush when the confirmation dialog is cancelled', async () => {
+        const user = userEvent.setup();
+        renderWithProviders(<MoveInPage />);
+
+        await screen.findByText('Bob Lee');
+        await user.click(screen.getByRole('button', { name: 'Flush Moved In' }));
+
+        const dialog = await screen.findByRole('dialog');
+        await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+
+        // Give any (unwanted) delete mutation time to fire before asserting it didn't.
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        expect(del).not.toHaveBeenCalled();
+    });
+
+    it('disables the flush button when nothing is marked as moved in', async () => {
+        get.mockResolvedValue({ data: [rows[0]] });
+        renderWithProviders(<MoveInPage />);
+
+        await screen.findByText('Amy Ng');
+        expect(screen.getByRole('button', { name: 'Flush Moved In' })).toBeDisabled();
     });
 });

@@ -22,6 +22,7 @@ interface MoveInFormValues {
     gender: string;
     birthday: Dayjs;
     address: string;
+    phone_number: string;
 }
 
 interface MoveInPayload {
@@ -31,7 +32,10 @@ interface MoveInPayload {
     gender: string;
     birthday: string;
     address: string;
+    phone_number: string;
 }
+
+const isValidPhoneNumber = (value: string): boolean => /^[\d\s()+.-]+$/.test(value) && value.replace(/\D/g, '').length >= 10 && value.replace(/\D/g, '').length <= 15;
 
 const MoveInPage = () => {
     const { message } = App.useApp();
@@ -58,7 +62,8 @@ const MoveInPage = () => {
             member_record_number: values.member_record_number ?? '',
             gender: values.gender,
             birthday: values.birthday.format('YYYY-MM-DD'),
-            address: values.address
+            address: values.address,
+            phone_number: values.phone_number
         });
     };
 
@@ -112,6 +117,19 @@ const MoveInPage = () => {
 
                 <Form.Item name="address" label="Address" rules={[{ required: true, message: 'Address is required' }]}>
                     <Input.TextArea rows={3} autoComplete="street-address" />
+                </Form.Item>
+
+                <Form.Item
+                    name="phone_number"
+                    label="Phone Number"
+                    rules={[
+                        { required: true, message: 'Phone number is required' },
+                        {
+                            validator: (_, value: string | undefined) => (!value || isValidPhoneNumber(value.trim()) ? Promise.resolve() : Promise.reject(new Error('Please enter a valid phone number')))
+                        }
+                    ]}
+                >
+                    <Input type="tel" inputMode="tel" autoComplete="tel" placeholder="XXX-XXX-XXXX" />
                 </Form.Item>
 
                 <Button type="primary" htmlType="submit" block loading={submitMutation.isPending}>
